@@ -1,0 +1,155 @@
+---
+version: "2.1"
+services: 
+  
+  #Auditbeat container
+  auditbeat:
+    container_name: auditbeat
+    hostname: auditbeat
+    user: root #To read the docker socket
+    image: "docker.elastic.co/beats/auditbeat:${ELASTIC_VERSION}"
+    volumes:
+      #Mount the Auditbeat configuration so users can make edits.
+      - ./config/beats/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: auditbeat -e -strict.perms=false -E output.elasticsearch.hosts=${ELASTICSEARCH_HOST} -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
+    pid: "host" # Set the required permissions with pid and cap_add for Auditbeat
+    cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
+    networks: ['stack']
+    restart: on-failure
+
+  #Heartbeat container
+  # heartbeat:
+  #   container_name: heartbeat
+  #   hostname: heartbeat
+  #   user: root #To read the docker socket
+  #   image: "docker.elastic.co/beats/heartbeat:${ELASTIC_VERSION}"
+  #   volumes:
+  #     #Mount the Heartbeat configuration so users can make edits.
+  #     - ./config/beats/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
+  #     #Allows us to report on docker from the hosts information.
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   # depends_on:
+  #   #   elasticsearch: { condition: service_healthy }
+  #   # command: heartbeat -e -strict.perms=false
+  #   command: heartbeat -e -strict.perms=false -E output.elasticsearch.hosts=${ELASTICSEARCH_HOST} -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
+  #   networks: ['stack']
+  #   restart: on-failure
+
+  #Filebeat container
+  filebeat:
+    container_name: filebeat
+    hostname: filebeat
+    user: root #To read the docker socket
+    image: "docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}"
+    volumes:
+      #Mount the Filebeat configuration so users can make edits.
+      - ./config/beats/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      #Mount the prospectors directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
+     # - ./config/beats/filebeat/prospectors.d/:/usr/share/filebeat/prospectors.d/
+       #Mount the module directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
+      - ./config/beats/filebeat/modules.d/:/usr/share/filebeat/modules.d/
+      #Mount the hosts system log directory. This represents the logs of the VM hosting docker. Consumed by the Filebeat system module.
+      - /private/var/log/:/var/log/host/:ro
+      #Mount the Docker logs for indexing by the custom prospector ./config/filebeat/prospectors.d.
+      - /var/lib/docker/containers:/hostfs/var/lib/docker/containers
+      #Named volume fsdata. This is used to persist the registry file between restarts, so to avoid data duplication.
+      - filebeatdata:/usr/share/filebeat/data/
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+      #Mount the logs from CORDA log directory.
+      - /opt/corda/logs
+      - /opt/corda/logs/web
+    networks: ['stack']
+    # command: filebeat -e -strict.perms=false
+    command: filebeat -e -strict.perms=false -E output.elasticsearch.hosts=${ELASTICSEARCH_HOST} -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
+    restart: on-failure
+    # depends_on:
+    #   elasticsearch: { condition: service_healthy }
+
+  #Metricbeat container
+  metricbeat:
+    container_name: metricbeat
+    hostname: metricbeat
+    user: root #To read the docker socket
+    image: docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
+    volumes:
+      #Mount the metricbeat configuration so users can make edits.
+      - ./config/beats/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      #Mount the modules.d directory into the container. This allows user to potentially make changes to the modules and they will be dynamically loaded.
+      - ./config/beats/metricbeat/modules.d/:/usr/share/metricbeat/modules.d/
+      #The commented sections below enable Metricbeat to monitor the Docker host rather than the Metricbeat container. These are used by the system module.
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+      #We mount the host filesystem so we can report on disk usage with the system module.
+      - /:/hostfs:ro
+    
+    command: metricbeat -e -system.hostfs=/hostfs -strict.perms=false -E output.elasticsearch.hosts=${ELASTICSEARCH_HOST} -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
+    networks: ['stack']
+    restart: on-failure
+    # environment:
+    #   - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+    # depends_on:
+    #   elasticsearch:  { condition: service_healthy }
+
+
+
+  #Packetbeat container
+  packetbeat:
+    container_name: packetbeat
+    hostname: packetbeat
+    user: root #To read the docker socket
+    image: "docker.elastic.co/beats/packetbeat:${ELASTIC_VERSION}"
+    volumes:
+      #Mount the packetbeat configuration so users can make edits.
+      - ./config/beats/packetbeat/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+    # Packetbeat needs some elevated privileges to capture network traffic. We'll grant them with POSIX capabilities.
+    cap_add: ['NET_RAW', 'NET_ADMIN']
+    # Use "host mode" networking to allow Packetbeat to capture traffic from the real network interface on the host,
+    # rather than being isolated to the container's virtual interface.
+    network_mode: host
+    restart: on-failure
+    command: packetbeat -e -strict.perms=false -E output.elasticsearch.hosts=${ELASTICSEARCH_HOST} -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
+    # depends_on:
+    #   elasticsearch:  { condition: service_healthy }
+
+  #nginx container
+  # nginx:
+  #   container_name: nginx
+  #   hostname: nginx
+  #   build: ${PWD}/config/nginx
+  #   networks: ['stack']
+  #   #Expose port 80 to allow users to hit content and generate data for filebeat and packetbeat.
+  #   ports: ['80:80']
+  #   command: nginx -g 'daemon off;'
+  #   volumes:
+  #     #Logs are mounted to a relative path. These are also accessed by Filebeat and consumed by the Nginx module.
+  #     - ./logs/nginx/:/var/log/nginx/
+
+  #MySQL container
+  # mysql:
+  #   container_name: mysql
+  #   hostname: mysql
+  #   build: ${PWD}/config/mysql
+  #   environment:
+  #     - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+  #   networks: ['stack']
+  #   #Expose port 3306 to allow users to connect and perform operations. These will be picked up by Packetbeat, Filebeat and Metricbeat.
+  #   ports: ['3306:3306']
+  #   volumes:
+  #     #Use named volume so mysql data is persisted across restart.
+  #     - mysqldata:/var/lib/mysql/
+  #     #Logs are mounted to a relative path. These are also accessed by Filebeat and consumed by the MySQL module.
+  #     - ./logs/mysql:/var/log/mysql/
+
+volumes:
+  esdata:
+    driver: local
+  filebeatdata:
+    driver: local
+networks: {stack: {}}

@@ -11,7 +11,7 @@
 
 metricbeat.config.modules:
   # Glob pattern for configuration loading
-  path: ${path.config}/modules.d/*.yml
+  path: /modules.d/*.yml
 
   # Set to true to enable config reloading
   reload.enabled: false
@@ -46,7 +46,7 @@ setup.template.settings:
 # These settings control loading the sample dashboards to the Kibana index. Loading
 # the dashboards is disabled by default and can be enabled either by setting the
 # options here or by using the `setup` command.
-#setup.dashboards.enabled: false
+setup.dashboards.enabled: true
 
 # The URL from where to download the dashboards archive. By default this URL
 # has a value which is computed based on the Beat name and version. For released
@@ -64,8 +64,7 @@ setup.kibana:
   # Scheme and port can be left out and will be set to the default (http and 5601)
   # In case you specify and additional path, the scheme is required: http://localhost:5601/path
   # IPv6 addresses should always be defined as: https://[2001:db8::1]:5601
-  #host: "localhost:5601"
-
+  host: '${KIBANA_HOST}'
   # Kibana Space ID
   # ID of the Kibana Space into which the dashboards should be loaded. By default,
   # the Default Space will be used.
@@ -78,11 +77,11 @@ setup.kibana:
 # The cloud.id setting overwrites the `output.elasticsearch.hosts` and
 # `setup.kibana.host` options.
 # You can find the `cloud.id` in the Elastic Cloud web UI.
-#cloud.id:
+cloud.id: '${BLOCKCHAIN_CLUSTER_UUID}'
 
 # The cloud.auth setting overwrites the `output.elasticsearch.username` and
 # `output.elasticsearch.password` settings. The format is `<user>:<pass>`.
-#cloud.auth:
+cloud.auth: '${BLOCKCHAIN_CLUSTER_AUTH}'
 
 #================================ Outputs =====================================
 
@@ -91,7 +90,7 @@ setup.kibana:
 #-------------------------- Elasticsearch output ------------------------------
 output.elasticsearch:
   # Array of hosts to connect to.
-  hosts: ["localhost:9200"]
+ #hosts: '${ELASTICSEARCH_HOST}'
 
   # Optional protocol and basic auth credentials.
   #protocol: "https"
@@ -121,13 +120,13 @@ processors:
   - add_host_metadata: ~
   - add_cloud_metadata: ~
   - add_docker_metadata: ~
-  - add_kubernetes_metadata: ~
+  #- add_kubernetes_metadata: ~
 
 #================================ Logging =====================================
 
 # Sets log level. The default log level is info.
 # Available log levels are: error, warning, info, debug
-#logging.level: debug
+logging.level: error
 
 # At debug level, you can selectively enable logging only for some components.
 # To enable all selectors use ["*"]. Examples of other selectors are "beat",
@@ -140,12 +139,13 @@ processors:
 # reporting is disabled by default.
 
 # Set to true to enable the monitoring reporter.
-#monitoring.enabled: false
+monitoring.enabled: true
 
 # Sets the UUID of the Elasticsearch cluster under which monitoring data for this
 # Metricbeat instance will appear in the Stack Monitoring UI. If output.elasticsearch
 # is enabled, the UUID is derived from the Elasticsearch cluster referenced by output.elasticsearch.
-#monitoring.cluster_uuid:
+#monitoring.cluster_uuid: '${env:MONITORING_CLUSTER_UUID}'
+monitoring.cluster_uuid: "BlockchainDemoMonitor:ZXVyb3BlLXdlc3QzLmdjcC5jbG91ZC5lcy5pbyQ2ZDA4NzZmYmFhNjE0ZjM3YTYyMDFjNDc4MTM0NTE0OCQxOTRjNDMwNWFmODE0ZjU3OWQ0MWY3Y2Q5YzYwYjdiNw=="
 
 # Uncomment to send the metrics to Elasticsearch. Most settings from the
 # Elasticsearch output are accepted here as well.
