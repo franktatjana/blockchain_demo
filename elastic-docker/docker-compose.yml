@@ -98,25 +98,25 @@ services:
 
 
   #Packetbeat container
-  packetbeat:
-    container_name: packetbeat
-    hostname: packetbeat
-    user: root #To read the docker socket
-    image: "docker.elastic.co/beats/packetbeat:${ELASTIC_VERSION}"
-    volumes:
-      #Mount the packetbeat configuration so users can make edits.
-      - ./config/beats/packetbeat/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
-      #Allows us to report on docker from the hosts information.
-      - /var/run/docker.sock:/var/run/docker.sock
-    # Packetbeat needs some elevated privileges to capture network traffic. We'll grant them with POSIX capabilities.
-    cap_add: ['NET_RAW', 'NET_ADMIN']
-    # Use "host mode" networking to allow Packetbeat to capture traffic from the real network interface on the host,
-    # rather than being isolated to the container's virtual interface.
-    network_mode: host
-    restart: on-failure
-    command: packetbeat -e -strict.perms=false -E output.elasticsearch.hosts=${ELASTICSEARCH_HOST} -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
-    # depends_on:
-    #   elasticsearch:  { condition: service_healthy }
+  # packetbeat:
+  #   container_name: packetbeat
+  #   hostname: packetbeat
+  #   user: root #To read the docker socket
+  #   image: "docker.elastic.co/beats/packetbeat:${ELASTIC_VERSION}"
+  #   volumes:
+  #     #Mount the packetbeat configuration so users can make edits.
+  #     - ./config/beats/packetbeat/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
+  #     #Allows us to report on docker from the hosts information.
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   # Packetbeat needs some elevated privileges to capture network traffic. We'll grant them with POSIX capabilities.
+  #   cap_add: ['NET_RAW', 'NET_ADMIN']
+  #   # Use "host mode" networking to allow Packetbeat to capture traffic from the real network interface on the host,
+  #   # rather than being isolated to the container's virtual interface.
+  #   network_mode: host
+  #   restart: on-failure
+  #   command: packetbeat -e -strict.perms=false -E output.elasticsearch.hosts=${ELASTICSEARCH_HOST} -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
+  #   # depends_on:
+  #   #   elasticsearch:  { condition: service_healthy }
 
   #nginx container
   # nginx:

@@ -9,84 +9,75 @@
 
 #==========================  Modules configuration =============================
 auditbeat.modules:
-# Check the file integrity of the following folders.
-# sends events when a file is changed (created, updated, or deleted) on disk
-# https://www.elastic.co/guide/en/beats/auditbeat/current/auditbeat-module-file_integrity.html
-- module: file_integrity
-  paths:
-  - /bin
-  - /usr/bin
-  - /usr/local/bin
-  - /sbin
-  - /usr/sbin
-  - /usr/local/sbin
+  # Check the file integrity of the following folders.
+  - module: file_integrity
+    paths:
+    - /bin
+    - /usr/bin
+    - /usr/local/bin
+    - /sbin
+    - /usr/sbin
+    - /usr/local/sbin
+    #Special Check for Corda configuration, /node.conf
+   # -/home/user/cordaBase/config
+   # ./nodes/notary/corda-notary.conf:/opt/corda/node.conf
 
-#Special Check for Corda configuration, /node.conf
-#  - /home/user/cordaBase/config
-#  - /corda-docker/nodes/bankaa/corda-banka.conf
-#  - /corda-docker/nodes/bankab/cordb-banka.conf
-#  - /corda-docker/nodes/bankac/cordc-banka.conf
+  # Collect Linux kernel events.
+  - module: auditd
+    resolve_ids: true
+    failure_mode: silent
+    backlog_limit: 8196
+    rate_limit: 0
+    include_raw_message: false
+    include_warnings: false
+    audit_rules: |
 
-# collects various security related information about a system.
-# https://www.elastic.co/guide/en/beats/auditbeat/current/auditbeat-module-system.html
-- module: system
-  datasets:
-  - host    # General host information, e.g. uptime, IPs
-  - package # Installed, updated, and removed packages
-  - process # Started and stopped processes
-  #- socket  # Opened and closed sockets
-  - user    # User information
-    
-# Collect Linux kernel events, receives audit events from the Linux Audit Framework that is a part of the Linux kernel
-# https://www.elastic.co/guide/en/beats/auditbeat/current/auditbeat-module-auditd.html
-- module: auditd
-  resolve_ids: true
-  failure_mode: silent
-  backlog_limit: 8196
-  rate_limit: 0
-  include_raw_message: false
-  include_warnings: false
-  audit_rules: |
+      ## Things that affect identity
+      -w /etc/group -p wa -k identity
+      -w /etc/passwd -p wa -k identity
+      -w /etc/gshadow -p wa -k identity
+      -w /etc/shadow -p wa -k identity
+      -w /etc/security/opasswd -p wa -k identity
 
-    ## Things that affect identity
-    -w /etc/group -p wa -k identity
-    -w /etc/passwd -p wa -k identity
-    -w /etc/gshadow -p wa -k identity
-    -w /etc/shadow -p wa -k identity
-    -w /etc/security/opasswd -p wa -k identity 
-    
-    ## Log permission errors
-    -a always,exit -F arch=b64 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EPERM -k access
+      ## Log permission errors
+      -a always,exit -F arch=b64 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EPERM -k access
 
-    ## Log processes that call the `socket` system call
-    -a always,exit -F arch=b64 -S socket -F a0=2 -k socket
-    -a always,exit -F arch=b64 -S socket -F a0=10 -k socket
+      ## Log processes that call the `socket` system call
+      -a always,exit -F arch=b64 -S socket -F a0=2 -k socket
+      -a always,exit -F arch=b64 -S socket -F a0=10 -k socket
 
-    ## The purpose of this rule is to detect when an admin may be abusing power
-    ## by looking in user's home dir.
-    -a always,exit -F dir=/home -F uid=0 -F auid>=1000 -F auid!=4294967295 -C auid!=obj_uid -F key=power-abuse
+      ## The purpose of this rule is to detect when an admin may be abusing power
+      ## by looking in user's home dir.
+      -a always,exit -F dir=/home -F uid=0 -F auid>=1000 -F auid!=4294967295 -C auid!=obj_uid -F key=power-abuse
 
-    ## log all executed processes
-    #-a always,exit -S execve
+      ## log all executed processes
+      #-a always,exit -S execve
 
-    ## All elevation of privileges is logged
-    -a always,exit -F arch=b64 -S setuid -F a0=0 -F exe=/usr/bin/su -F key=elevated-privs
-    -a always,exit -F arch=b32 -S setuid -F a0=0 -F exe=/usr/bin/su -F key=elevated-privs
-    -a always,exit -F arch=b64 -S setresuid -F a0=0 -F exe=/usr/bin/sudo -F key=elevated-privs
-    -a always,exit -F arch=b32 -S setresuid -F a0=0 -F exe=/usr/bin/sudo -F key=elevated-privs
-    -a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=elevated-privs
-    -a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=elevated-privs
+      ## All elevation of privileges is logged
+      -a always,exit -F arch=b64 -S setuid -F a0=0 -F exe=/usr/bin/su -F key=elevated-privs
+      -a always,exit -F arch=b32 -S setuid -F a0=0 -F exe=/usr/bin/su -F key=elevated-privs
+      -a always,exit -F arch=b64 -S setresuid -F a0=0 -F exe=/usr/bin/sudo -F key=elevated-privs
+      -a always,exit -F arch=b32 -S setresuid -F a0=0 -F exe=/usr/bin/sudo -F key=elevated-privs
+      -a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=elevated-privs
+      -a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=elevated-privs
 
-# How often datasets send state updates with the
-# current state of the system (e.g. all currently
-# running processes, all open sockets).
-state.period: 12h
+# Collect system information.
+  - module: system
+    datasets:
+      - host    # General host information, e.g. uptime, IPs
+      - package # Installed, updated, and removed packages
+      - process # Started and stopped processes
+
+  # How often datasets send state updates with the
+  # current state of the system (e.g. all currently
+  # running processes, all open sockets).
+  state.period: 12h
 
 #==================== Elasticsearch template setting ==========================
 setup.template.settings:
   index.number_of_shards: 1
   index.codec: best_compression
-#_source.enabled: false
+  #_source.enabled: false
 
 #================================ General =====================================
 
@@ -145,8 +136,8 @@ setup.kibana:
 # The cloud.auth setting overwrites the `output.elasticsearch.username` and
 # `output.elasticsearch.password` settings. The format is `<user>:<pass>`.
 
-cloud.id: '${BLOCKCHAIN_CLUSTER_UUID}'
-cloud.auth: '${BLOCKCHAIN_CLUSTER_AUTH}'
+cloud.id: '${ELASTIC_CLOUD_ID}'
+cloud.auth: '${ELASTIC_CLOUD_AUTH}'
 
 #================================ Outputs =====================================
 
@@ -155,7 +146,7 @@ cloud.auth: '${BLOCKCHAIN_CLUSTER_AUTH}'
 #-------------------------- Elasticsearch output ------------------------------
 output.elasticsearch:
   # Array of hosts to connect to.
-  #hosts: '${ELASTICSEARCH_HOST}'
+  hosts: '${ELASTICSEARCH_HOST}'
 
   # Optional protocol and basic auth credentials.
   #protocol: "https"
@@ -209,7 +200,7 @@ monitoring.enabled: true
 # Sets the UUID of the Elasticsearch cluster under which monitoring data for this
 # Filebeat instance will appear in the Stack Monitoring UI. If output.elasticsearch
 # is enabled, the UUID is derived from the Elasticsearch cluster referenced by output.elasticsearch.
-monitoring.cluster_uuid: '${env:MONITORING_CLUSTER_UUID}'
+monitoring.cluster_uuid: '${MONITORING_CLUSTER_UUID}'
 
 # Uncomment to send the metrics to Elasticsearch. Most settings from the
 # Elasticsearch output are accepted here as well.
@@ -218,7 +209,8 @@ monitoring.cluster_uuid: '${env:MONITORING_CLUSTER_UUID}'
 # output configuration, so if you have the Elasticsearch output configured such
 # that it is pointing to your Elasticsearch monitoring cluster, you can simply
 # uncomment the following line.
-monitoring.elasticsearch: ${MONITORING_ES_HOST}
+#monitoring.elasticsearch: ${MONITORING_ES}
 #================================= Migration ==================================
+
 # This allows to enable 6.7 migration aliases
 #migration.6_to_7.enabled: true
