@@ -13,7 +13,7 @@ services:
       - ./config/beats/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock
-    command: auditbeat -e --strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_AUTH}
+    command: auditbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_AUTH}
 
     pid: "host" # Set the required permissions with pid and cap_add for Auditbeat
     cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
@@ -64,7 +64,7 @@ services:
       - /opt/corda/logs/web
     networks: ['stack']
     # command: filebeat -e -strict.perms=false
-    command: filebeat -E --strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_AUTH}
+    command: filebeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_AUTH}
     restart: on-failure
     # depends_on:
     #   elasticsearch: { condition: service_healthy }
