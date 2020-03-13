@@ -178,7 +178,7 @@ cloud.auth: '${BLOCKCHAIN_CLUSTER_AUTH}'
 # Configure what output to use when sending the data collected by the beat.
 
 #-------------------------- Elasticsearch output ------------------------------
-output.elasticsearch:
+#output.elasticsearch:
   # Array of hosts to connect to.
   #hosts: '${ELASTICSEARCH_HOST}'
 
@@ -233,8 +233,7 @@ monitoring.enabled: true
 # Sets the UUID of the Elasticsearch cluster under which monitoring data for this
 # Packetbeat instance will appear in the Stack Monitoring UI. If output.elasticsearch
 # is enabled, the UUID is derived from the Elasticsearch cluster referenced by output.elasticsearch.
-#monitoring.cluster_uuid: '${env:MONITORING_CLUSTER_UUID}'
-monitoring.cluster_uuid: "BlockchainDemoMonitor:ZXVyb3BlLXdlc3QzLmdjcC5jbG91ZC5lcy5pbyQ2ZDA4NzZmYmFhNjE0ZjM3YTYyMDFjNDc4MTM0NTE0OCQxOTRjNDMwNWFmODE0ZjU3OWQ0MWY3Y2Q5YzYwYjdiNw=="
+monitoring.cluster_uuid: ${env:MONITORING_CLUSTER_UUID}'
 
 # Uncomment to send the metrics to Elasticsearch. Most settings from the
 # Elasticsearch output are accepted here as well.
@@ -243,7 +242,7 @@ monitoring.cluster_uuid: "BlockchainDemoMonitor:ZXVyb3BlLXdlc3QzLmdjcC5jbG91ZC5l
 # output configuration, so if you have the Elasticsearch output configured such
 # that it is pointing to your Elasticsearch monitoring cluster, you can simply
 # uncomment the following line.
-#monitoring.elasticsearch:
+monitoring.elasticsearch: ${env:MONITORING_ES_HOST}'
 
 #================================= Migration ==================================
 
