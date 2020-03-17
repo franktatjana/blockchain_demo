@@ -19,8 +19,7 @@ auditbeat.modules:
     - /usr/sbin
     - /usr/local/sbin
     #Special Check for Corda configuration, /node.conf
-   # -/home/user/cordaBase/config
-   # ./nodes/notary/corda-notary.conf:/opt/corda/node.conf
+    - /nodes/notary/corda-notary.conf:/opt/corda/node.conf
 
   # Collect Linux kernel events.
   - module: auditd

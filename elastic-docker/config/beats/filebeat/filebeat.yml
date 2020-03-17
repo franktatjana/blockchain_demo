@@ -27,7 +27,6 @@ filebeat.inputs:
   paths:
     - /var/log/*.log
     - /opt/corda/logs
-    - /opt/corda/logs/web
     #- c:\programdata\elasticsearch\logs\*
 
   # Exclude lines. A list of regular expressions to match. It drops the lines that are
@@ -81,7 +80,7 @@ filebeat.config.modules:
 
 setup.template.settings:
   index.number_of_shards: 1
-  #index.codec: best_compression
+  index.codec: best_compression
   #_source.enabled: false
 
 #================================ General =====================================
