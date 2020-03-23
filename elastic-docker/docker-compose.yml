@@ -2,21 +2,6 @@
 version: "2.1"
 services: 
 
-  elasticsearch:
-    healthcheck:
-      test: curl --cacert /usr/share/elasticsearch/config/certs/ca/ca.crt -s https://8d5a1f48762b49cfb6c818307cb84008.europe-west3.gcp.cloud.es.io:9243 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
-      interval: 30s
-      timeout: 10s
-      retries: 5
-  
-  kibana:
-    depends_on: ['elasticsearch']
-    healthcheck:
-      test: curl --cacert /usr/share/elasticsearch/config/certs/ca/ca.crt -s https://0d350700f4b34a6988e74a0d07d0ac76.europe-west3.gcp.cloud.es.io:9243 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
-      interval: 30s
-      timeout: 10s
-      retries: 5
-  
   #Auditbeat container
   auditbeat:
     image: "docker.elastic.co/beats/auditbeat:${ELASTIC_VERSION}"
@@ -41,7 +26,6 @@ services:
     #     target: /usr/share/auditbeat/certs/ca/ca.crt
     # Auditbeat must run in the main process namespace.
     pid: host
-    depends_on: ['elasticsearch', 'kibana']
     healthcheck:
       test: auditbeat --strict.perms=false test config
       interval: 30s
@@ -69,7 +53,6 @@ services:
     #     target: /usr/share/heartbeat/certs/ca/ca.crt
     networks: ['stack']
     restart: on-failure
-    depends_on: ['elasticsearch', 'kibana']
     healthcheck:
       test: heartbeat test config
       interval: 30s
@@ -85,7 +68,6 @@ services:
     volumes:
       #Mount the Filebeat configuration so users can make edits.
       - ./config/beats/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - $(pwd)/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
       #Mount the prospectors directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
      # - ./config/beats/filebeat/prospectors.d/:/usr/share/filebeat/prospectors.d/
        #Mount the module directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
@@ -99,7 +81,7 @@ services:
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock:ro
       #Mount the logs from CORDA log directory.
-      - /opt/corda/logs/:/opt/corda/logs/:ro
+      - /opt/corda/logs/:/opt/corda/logs/
 
     networks: ['stack']
     command: filebeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
@@ -111,7 +93,6 @@ services:
     #   - source: ca.crt
     #     target: /usr/share/filebeat/certs/ca/ca.crt
     restart: on-failure
-    depends_on: ['elasticsearch', 'kibana']
     healthcheck:
       test: filebeat test config
       interval: 30s
@@ -147,7 +128,6 @@ services:
     #     target: /usr/share/metricbeat/certs/ca/ca.crt
     networks: ['stack']
     restart: on-failure
-    depends_on: ['elasticsearch', 'kibana']
     healthcheck:
       test: metricbeat test config
       interval: 30s
@@ -180,7 +160,6 @@ services:
     #     target: /usr/share/packetbeat/packetbeat.keystore
     #   - source: ca.crt
     #     target: /usr/share/packetbeat/certs/ca/ca.crt
-    depends_on: ['elasticsearch', 'kibana']
     healthcheck:
       test: packetbeat test config
       interval: 30s
