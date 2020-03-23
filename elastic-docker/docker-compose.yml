@@ -1,24 +1,52 @@
 ---
 version: "2.1"
 services: 
+
+  elasticsearch:
+    healthcheck:
+      test: curl --cacert /usr/share/elasticsearch/config/certs/ca/ca.crt -s https://8d5a1f48762b49cfb6c818307cb84008.europe-west3.gcp.cloud.es.io:9243 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  
+  kibana:
+    depends_on: ['elasticsearch']
+    healthcheck:
+      test: curl --cacert /usr/share/elasticsearch/config/certs/ca/ca.crt -s https://0d350700f4b34a6988e74a0d07d0ac76.europe-west3.gcp.cloud.es.io:9243 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
   
   #Auditbeat container
   auditbeat:
+    image: "docker.elastic.co/beats/auditbeat:${ELASTIC_VERSION}"
     container_name: auditbeat
     hostname: auditbeat
-    user: root #To read the docker socket
-    image: "docker.elastic.co/beats/auditbeat:${ELASTIC_VERSION}"
+    user: root
     volumes:
       #Mount the Auditbeat configuration so users can make edits.
       - ./config/beats/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock
     command: auditbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
-
-    pid: "host" # Set the required permissions with pid and cap_add for Auditbeat
     cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
     networks: ['stack']
     restart: on-failure
+    # secrets:
+    #   - source: auditbeat.yml
+    #     target: /usr/share/auditbeat/auditbeat.yml
+    #   - source: auditbeat.keystore
+    #     target: /usr/share/auditbeat/auditbeat.keystore
+    #   - source: ca.crt
+    #     target: /usr/share/auditbeat/certs/ca/ca.crt
+    # Auditbeat must run in the main process namespace.
+    pid: host
+    depends_on: ['elasticsearch', 'kibana']
+    healthcheck:
+      test: auditbeat --strict.perms=false test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
 
   #Heartbeat container
   heartbeat:
@@ -31,12 +59,22 @@ services:
       - ./config/beats/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock
-    # depends_on:
-    #   elasticsearch: { condition: service_healthy }
-    # command: heartbeat -e -strict.perms=false
     command: heartbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} 
+    # secrets:
+    #   - source: heartbeat.yml
+    #     target: /usr/share/heartbeat/heartbeat.yml
+    #   - source: heartbeat.keystore
+    #     target: /usr/share/heartbeat/heartbeat.keystore
+    #   - source: ca.crt
+    #     target: /usr/share/heartbeat/certs/ca/ca.crt
     networks: ['stack']
     restart: on-failure
+    depends_on: ['elasticsearch', 'kibana']
+    healthcheck:
+      test: heartbeat test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
 
   #Filebeat container
   filebeat:
@@ -47,6 +85,7 @@ services:
     volumes:
       #Mount the Filebeat configuration so users can make edits.
       - ./config/beats/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - $(pwd)/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
       #Mount the prospectors directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
      # - ./config/beats/filebeat/prospectors.d/:/usr/share/filebeat/prospectors.d/
        #Mount the module directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
@@ -54,20 +93,30 @@ services:
       #Mount the hosts system log directory. This represents the logs of the VM hosting docker. Consumed by the Filebeat system module.
       - /private/var/log/:/var/log/host/:ro
       #Mount the Docker logs for indexing by the custom prospector ./config/filebeat/prospectors.d.
-      - /var/lib/docker/containers:/hostfs/var/lib/docker/containers
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
       #Named volume fsdata. This is used to persist the registry file between restarts, so to avoid data duplication.
       - filebeatdata:/usr/share/filebeat/data/
       #Allows us to report on docker from the hosts information.
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       #Mount the logs from CORDA log directory.
-      - /opt/corda/logs
-      - /opt/corda/logs/web
+      - /opt/corda/logs/:/opt/corda/logs/:ro
+
     networks: ['stack']
-    # command: filebeat -e -strict.perms=false
     command: filebeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
+    # secrets:
+    #   - source: filebeat.yml
+    #     target: /usr/share/filebeat/filebeat.yml
+    #   - source: filebeat.keystore
+    #     target: /usr/share/filebeat/filebeat.keystore
+    #   - source: ca.crt
+    #     target: /usr/share/filebeat/certs/ca/ca.crt
     restart: on-failure
-    # depends_on:
-    #   elasticsearch: { condition: service_healthy }
+    depends_on: ['elasticsearch', 'kibana']
+    healthcheck:
+      test: filebeat test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
 
   #Metricbeat container
   metricbeat:
@@ -89,8 +138,21 @@ services:
       - /:/hostfs:ro
     
     command: metricbeat -e -system.hostfs=/hostfs -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
+    # secrets:
+    #   - source: metricbeat.yml
+    #     target: /usr/share/metricbeat/metricbeat.yml
+    #   - source: metricbeat.keystore
+    #     target: /usr/share/metricbeat/metricbeat.keystore
+    #   - source: ca.crt
+    #     target: /usr/share/metricbeat/certs/ca/ca.crt
     networks: ['stack']
     restart: on-failure
+    depends_on: ['elasticsearch', 'kibana']
+    healthcheck:
+      test: metricbeat test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
 
 
   #Packetbeat container
@@ -111,8 +173,19 @@ services:
     network_mode: host
     restart: on-failure
     command: packetbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
-    # depends_on:
-    #   elasticsearch:  { condition: service_healthy }
+    # secrets:
+    #   - source: packetbeat.yml
+    #     target: /usr/share/packetbeat/packetbeat.yml
+    #   - source: packetbeat.keystore
+    #     target: /usr/share/packetbeat/packetbeat.keystore
+    #   - source: ca.crt
+    #     target: /usr/share/packetbeat/certs/ca/ca.crt
+    depends_on: ['elasticsearch', 'kibana']
+    healthcheck:
+      test: packetbeat test config
+      interval: 30s
+      timeout: 15s
+      retries: 5
 
 volumes:
   esdata:
