@@ -201,6 +201,11 @@ logging.level: error
 
 # Set to true to enable the monitoring reporter.
 monitoring.enabled: true
+monitoring.cluster_uuid: '${MONITORING_CLUSTER_UUID}'
+monitoring.elasticsearch:
+    hosts: ${MONITORING_ES_HOST}
+    username: elastic
+    password:  ${MONITORING_CLUSTER_PASS} 
 
 # Sets the UUID of the Elasticsearch cluster under which monitoring data for this
 # Filebeat instance will appear in the Stack Monitoring UI. If output.elasticsearch
@@ -216,10 +221,10 @@ monitoring.enabled: true
 # uncomment the following line.
 #monitoring.elasticsearch: ${env:MONITORING_ES_HOST}'
 
-monitoring:
-  enabled: true
-  cloud.id: '${MONITORING_CLUSTER_UUID}'
-  cloud.auth: '${MONITORING_CLUSTER_AUTH}'
+# monitoring:
+#   enabled: true
+#   cloud.id: '${MONITORING_CLUSTER_UUID}'
+#   cloud.auth: '${MONITORING_CLUSTER_AUTH}'
 
 #================================= Migration ==================================
 
