@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # If variable not present use default values
 
