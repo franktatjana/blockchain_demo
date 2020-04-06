@@ -12,7 +12,7 @@ services:
       - ./beats/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock  
-    command: ./auditbeat -c -e ./beats/auditbeat/auditbeat.yml -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS}  -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
+    command: ./auditbeat -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS}  -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
     cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
     networks: ['stack']
     restart: on-failure
