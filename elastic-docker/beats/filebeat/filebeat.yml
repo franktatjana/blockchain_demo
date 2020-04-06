@@ -1,78 +1,82 @@
-###################### Auditbeat Configuration Example #########################
+###################### Filebeat Configuration Example #########################
 
-# This is an example configuration file highlighting only the most common
-# options. The auditbeat.reference.yml file from the same directory contains all
-# the supported options with more comments. You can use it as a reference.
+# This file is an example configuration file highlighting only the most common
+# options. The filebeat.reference.yml file from the same directory contains all the
+# supported options with more comments. You can use it as a reference.
 #
 # You can find the full configuration reference here:
-# https://www.elastic.co/guide/en/beats/auditbeat/index.html
+# https://www.elastic.co/guide/en/beats/filebeat/index.html
 
-#==========================  Modules configuration =============================
-auditbeat.modules:
-  # Check the file integrity of the following folders.
-  - module: file_integrity
-    paths:
-    - /bin
-    - /usr/bin
-    - /usr/local/bin
-    - /sbin
-    - /usr/sbin
-    - /usr/local/sbin
-    #Special Check for Corda configuration, /node.conf
-    - /nodes/notary/corda-notary.conf:/opt/corda/node.conf
+# For more available modules and options, please see the filebeat.reference.yml sample
+# configuration file.
 
-  # Collect Linux kernel events.
-  - module: auditd
-    resolve_ids: true
-    failure_mode: silent
-    backlog_limit: 8196
-    rate_limit: 0
-    include_raw_message: false
-    include_warnings: false
-    audit_rules: |
+#=========================== Filebeat inputs =============================
 
-      ## Things that affect identity
-      -w /etc/group -p wa -k identity
-      -w /etc/passwd -p wa -k identity
-      -w /etc/gshadow -p wa -k identity
-      -w /etc/shadow -p wa -k identity
-      -w /etc/security/opasswd -p wa -k identity
+filebeat.inputs:
 
-      ## Log permission errors
-      -a always,exit -F arch=b64 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EPERM -k access
+# Each - is an input. Most options can be set at the input level, so
+# you can use different inputs for various configurations.
+# Below are the input specific configurations.
 
-      ## Log processes that call the `socket` system call
-      -a always,exit -F arch=b64 -S socket -F a0=2 -k socket
-      -a always,exit -F arch=b64 -S socket -F a0=10 -k socket
+- type: log
 
-      ## The purpose of this rule is to detect when an admin may be abusing power
-      ## by looking in user's home dir.
-      -a always,exit -F dir=/home -F uid=0 -F auid>=1000 -F auid!=4294967295 -C auid!=obj_uid -F key=power-abuse
+  # Change to true to enable this input configuration.
+  enabled: false
 
-      ## log all executed processes
-      #-a always,exit -S execve
+  # Paths that should be crawled and fetched. Glob based paths.
+  paths:
+    - /var/log/*.log
+    - /opt/corda/logs
 
-      ## All elevation of privileges is logged
-      -a always,exit -F arch=b64 -S setuid -F a0=0 -F exe=/usr/bin/su -F key=elevated-privs
-      -a always,exit -F arch=b32 -S setuid -F a0=0 -F exe=/usr/bin/su -F key=elevated-privs
-      -a always,exit -F arch=b64 -S setresuid -F a0=0 -F exe=/usr/bin/sudo -F key=elevated-privs
-      -a always,exit -F arch=b32 -S setresuid -F a0=0 -F exe=/usr/bin/sudo -F key=elevated-privs
-      -a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=elevated-privs
-      -a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=elevated-privs
+  # Exclude lines. A list of regular expressions to match. It drops the lines that are
+  # matching any regular expression from the list.
+  #exclude_lines: ['^DBG']
 
-# Collect system information.
-  - module: system
-    datasets:
-      - host    # General host information, e.g. uptime, IPs
-      - package # Installed, updated, and removed packages
-      - process # Started and stopped processes
+  # Include lines. A list of regular expressions to match. It exports the lines that are
+  # matching any regular expression from the list.
+  #include_lines: ['^ERR', '^WARN']
 
-# How often datasets send state updates with the
-# current state of the system (e.g. all currently
-# running processes, all open sockets).
-state.period: 12h
+  # Exclude files. A list of regular expressions to match. Filebeat drops the files that
+  # are matching any regular expression from the list. By default, no files are dropped.
+  #exclude_files: ['.gz$']
+
+  # Optional additional fields. These fields can be freely picked
+  # to add additional information to the crawled log files for filtering
+  #fields:
+  #  level: debug
+  #  review: 1
+
+  ### Multiline options
+
+  # Multiline can be used for log messages spanning multiple lines. This is common
+  # for Java Stack Traces or C-Line Continuation
+
+  # The regexp Pattern that has to be matched. The example pattern matches all lines starting with [
+  #multiline.pattern: ^\[
+
+  # Defines if the pattern set under pattern should be negated or not. Default is false.
+  #multiline.negate: false
+
+  # Match can be set to "after" or "before". It is used to define if lines should be append to a pattern
+  # that was (not) matched before or after or as long as a pattern is not matched based on negate.
+  # Note: After is the equivalent to previous and before is the equivalent to to next in Logstash
+  #multiline.match: after
+
+
+#============================= Filebeat modules ===============================
+
+filebeat.config.modules:
+  # Glob pattern for configuration loading
+  path: ${path.config}/modules.d/*.yml
+
+  # Set to true to enable config reloading
+  reload.enabled: false
+
+  # Period on which files under path should be checked for changes
+  #reload.period: 10s
 
 #==================== Elasticsearch template setting ==========================
+
 setup.template.settings:
   index.number_of_shards: 1
   index.codec: best_compression
@@ -82,7 +86,7 @@ setup.template.settings:
 
 # The name of the shipper that publishes the network data. It can be used to group
 # all the transactions sent by a single shipper in the web interface.
-name: local_audit
+#name:
 
 # The tags of the shipper are included in their own field with each
 # transaction published.
@@ -121,22 +125,21 @@ setup.kibana:
   # Kibana Space ID
   # ID of the Kibana Space into which the dashboards should be loaded. By default,
   # the Default Space will be used.
-  #space.id: eng
+  #space.id:
 
 #============================= Elastic Cloud ==================================
 
-# These settings simplify using Auditbeat with the Elastic Cloud (https://cloud.elastic.co/).
+# These settings simplify using Filebeat with the Elastic Cloud (https://cloud.elastic.co/).
 
 # The cloud.id setting overwrites the `output.elasticsearch.hosts` and
 # `setup.kibana.host` options.
 # You can find the `cloud.id` in the Elastic Cloud web UI.
-
+cloud.id: '${BLOCKCHAIN_CLUSTER_UUID}'
 
 # The cloud.auth setting overwrites the `output.elasticsearch.username` and
 # `output.elasticsearch.password` settings. The format is `<user>:<pass>`.
+cloud.auth: '${BLOCKCHAIN_CLUSTER_AUTH}'
 
-cloud.id: '${ELASTIC_CLOUD_ID}'
-cloud.auth: '${ELASTIC_CLOUD_AUTH}'
 
 #================================ Outputs =====================================
 
@@ -145,10 +148,13 @@ cloud.auth: '${ELASTIC_CLOUD_AUTH}'
 #-------------------------- Elasticsearch output ------------------------------
 #output.elasticsearch:
   # Array of hosts to connect to.
-  #hosts: '${ELASTICSEARCH_HOST}'
+  #hosts: ["localhost:9200"]
 
-  # Optional protocol and basic auth credentials.
+  # Protocol - either `http` (default) or `https`.
   #protocol: "https"
+
+  # Authentication credentials - either API key or username/password.
+  #api_key: "id:api_key"
   #username: "elastic"
   #password: "changeme"
 
@@ -175,6 +181,7 @@ processors:
   - add_host_metadata: ~
   - add_cloud_metadata: ~
   - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
 
 #================================ Logging =====================================
 
@@ -187,20 +194,18 @@ logging.level: error
 # "publish", "service".
 #logging.selectors: ["*"]
 
-#============================== Xpack Monitoring ===============================
-# auditbeat can export internal metrics to a central Elasticsearch monitoring
+#============================== X-Pack Monitoring ===============================
+# filebeat can export internal metrics to a central Elasticsearch monitoring
 # cluster.  This requires xpack monitoring to be enabled in Elasticsearch.  The
 # reporting is disabled by default.
 
-
 # Set to true to enable the monitoring reporter.
-monitorin.enabled: true
+monitoring.enabled: true
 
 # Sets the UUID of the Elasticsearch cluster under which monitoring data for this
 # Filebeat instance will appear in the Stack Monitoring UI. If output.elasticsearch
 # is enabled, the UUID is derived from the Elasticsearch cluster referenced by output.elasticsearch.
-# cloud.id: '${MONITORING_CLUSTER_UUID}'
-#cloud.auth: '${MONITORING_CLUSTER_AUTH}'
+#monitoring.cluster_uuid: ${env:MONITORING_CLUSTER_UUID}'
 
 # Uncomment to send the metrics to Elasticsearch. Most settings from the
 # Elasticsearch output are accepted here as well.
@@ -209,10 +214,13 @@ monitorin.enabled: true
 # output configuration, so if you have the Elasticsearch output configured such
 # that it is pointing to your Elasticsearch monitoring cluster, you can simply
 # uncomment the following line.
-#monitoring.elasticsearch: ${MONITORING_ES}
+#monitoring.elasticsearch: ${env:MONITORING_ES_HOST}'
+
 monitoring:
-  cloud.id: '${env:MONITORING_CLUSTER_UUID}'
-  cloud.auth: '${env:MONITORING_CLUSTER_AUTH}'
+  enabled: true
+  cloud.id: '${MONITORING_CLUSTER_UUID}'
+  cloud.auth: '${MONITORING_CLUSTER_AUTH}'
+
 #================================= Migration ==================================
 
 # This allows to enable 6.7 migration aliases

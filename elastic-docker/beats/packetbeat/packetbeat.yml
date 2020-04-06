@@ -244,8 +244,8 @@ monitoring.enabled: true
 # uncomment the following line.
 #monitoring.elasticsearch: ${env:MONITORING_ES_HOST}'
 monitoring:
-  cloud.id: '${env:MONITORING_CLUSTER_UUID}'
-  cloud.auth: '${env:MONITORING_CLUSTER_AUTH}'
+  cloud.id: '${MONITORING_CLUSTER_UUID}'
+  cloud.auth: '${MONITORING_CLUSTER_AUTH}'
 
 #================================= Migration ==================================
 

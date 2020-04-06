@@ -1,73 +1,17 @@
-###################### Filebeat Configuration Example #########################
+###################### Metricbeat Configuration Example #######################
 
 # This file is an example configuration file highlighting only the most common
-# options. The filebeat.reference.yml file from the same directory contains all the
+# options. The metricbeat.reference.yml file from the same directory contains all the
 # supported options with more comments. You can use it as a reference.
 #
 # You can find the full configuration reference here:
-# https://www.elastic.co/guide/en/beats/filebeat/index.html
+# https://www.elastic.co/guide/en/beats/metricbeat/index.html
 
-# For more available modules and options, please see the filebeat.reference.yml sample
-# configuration file.
+#==========================  Modules configuration ============================
 
-#=========================== Filebeat inputs =============================
-
-filebeat.inputs:
-
-# Each - is an input. Most options can be set at the input level, so
-# you can use different inputs for various configurations.
-# Below are the input specific configurations.
-
-- type: log
-
-  # Change to true to enable this input configuration.
-  enabled: false
-
-  # Paths that should be crawled and fetched. Glob based paths.
-  paths:
-    - /var/log/*.log
-    - /opt/corda/logs
-
-  # Exclude lines. A list of regular expressions to match. It drops the lines that are
-  # matching any regular expression from the list.
-  #exclude_lines: ['^DBG']
-
-  # Include lines. A list of regular expressions to match. It exports the lines that are
-  # matching any regular expression from the list.
-  #include_lines: ['^ERR', '^WARN']
-
-  # Exclude files. A list of regular expressions to match. Filebeat drops the files that
-  # are matching any regular expression from the list. By default, no files are dropped.
-  #exclude_files: ['.gz$']
-
-  # Optional additional fields. These fields can be freely picked
-  # to add additional information to the crawled log files for filtering
-  #fields:
-  #  level: debug
-  #  review: 1
-
-  ### Multiline options
-
-  # Multiline can be used for log messages spanning multiple lines. This is common
-  # for Java Stack Traces or C-Line Continuation
-
-  # The regexp Pattern that has to be matched. The example pattern matches all lines starting with [
-  #multiline.pattern: ^\[
-
-  # Defines if the pattern set under pattern should be negated or not. Default is false.
-  #multiline.negate: false
-
-  # Match can be set to "after" or "before". It is used to define if lines should be append to a pattern
-  # that was (not) matched before or after or as long as a pattern is not matched based on negate.
-  # Note: After is the equivalent to previous and before is the equivalent to to next in Logstash
-  #multiline.match: after
-
-
-#============================= Filebeat modules ===============================
-
-filebeat.config.modules:
+metricbeat.config.modules:
   # Glob pattern for configuration loading
-  path: ${path.config}/modules.d/*.yml
+  path: /modules.d/*.yml
 
   # Set to true to enable config reloading
   reload.enabled: false
@@ -121,7 +65,6 @@ setup.kibana:
   # In case you specify and additional path, the scheme is required: http://localhost:5601/path
   # IPv6 addresses should always be defined as: https://[2001:db8::1]:5601
   host: '${KIBANA_HOST}'
-
   # Kibana Space ID
   # ID of the Kibana Space into which the dashboards should be loaded. By default,
   # the Default Space will be used.
@@ -129,7 +72,7 @@ setup.kibana:
 
 #============================= Elastic Cloud ==================================
 
-# These settings simplify using Filebeat with the Elastic Cloud (https://cloud.elastic.co/).
+# These settings simplify using Metricbeat with the Elastic Cloud (https://cloud.elastic.co/).
 
 # The cloud.id setting overwrites the `output.elasticsearch.hosts` and
 # `setup.kibana.host` options.
@@ -140,7 +83,6 @@ cloud.id: '${BLOCKCHAIN_CLUSTER_UUID}'
 # `output.elasticsearch.password` settings. The format is `<user>:<pass>`.
 cloud.auth: '${BLOCKCHAIN_CLUSTER_AUTH}'
 
-
 #================================ Outputs =====================================
 
 # Configure what output to use when sending the data collected by the beat.
@@ -148,13 +90,10 @@ cloud.auth: '${BLOCKCHAIN_CLUSTER_AUTH}'
 #-------------------------- Elasticsearch output ------------------------------
 #output.elasticsearch:
   # Array of hosts to connect to.
-  #hosts: ["localhost:9200"]
+ #hosts: '${ELASTICSEARCH_HOST}'
 
-  # Protocol - either `http` (default) or `https`.
+  # Optional protocol and basic auth credentials.
   #protocol: "https"
-
-  # Authentication credentials - either API key or username/password.
-  #api_key: "id:api_key"
   #username: "elastic"
   #password: "changeme"
 
@@ -181,7 +120,7 @@ processors:
   - add_host_metadata: ~
   - add_cloud_metadata: ~
   - add_docker_metadata: ~
-  - add_kubernetes_metadata: ~
+  #- add_kubernetes_metadata: ~
 
 #================================ Logging =====================================
 
@@ -195,7 +134,7 @@ logging.level: error
 #logging.selectors: ["*"]
 
 #============================== X-Pack Monitoring ===============================
-# filebeat can export internal metrics to a central Elasticsearch monitoring
+# metricbeat can export internal metrics to a central Elasticsearch monitoring
 # cluster.  This requires xpack monitoring to be enabled in Elasticsearch.  The
 # reporting is disabled by default.
 
@@ -203,7 +142,7 @@ logging.level: error
 monitoring.enabled: true
 
 # Sets the UUID of the Elasticsearch cluster under which monitoring data for this
-# Filebeat instance will appear in the Stack Monitoring UI. If output.elasticsearch
+# Metricbeat instance will appear in the Stack Monitoring UI. If output.elasticsearch
 # is enabled, the UUID is derived from the Elasticsearch cluster referenced by output.elasticsearch.
 #monitoring.cluster_uuid: ${env:MONITORING_CLUSTER_UUID}'
 
@@ -215,11 +154,9 @@ monitoring.enabled: true
 # that it is pointing to your Elasticsearch monitoring cluster, you can simply
 # uncomment the following line.
 #monitoring.elasticsearch: ${env:MONITORING_ES_HOST}'
-
 monitoring:
-  enabled: true
-  cloud.id: '${env:MONITORING_CLUSTER_UUID}'
-  cloud.auth: '${env:MONITORING_CLUSTER_AUTH}'
+  cloud.id: '${MONITORING_CLUSTER_UUID}'
+  cloud.auth: '${MONITORING_CLUSTER_AUTH}'
 
 #================================= Migration ==================================
 
