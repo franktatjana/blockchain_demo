@@ -137,8 +137,8 @@ setup.kibana:
 # The cloud.auth setting overwrites the `output.elasticsearch.username` and
 # `output.elasticsearch.password` settings. The format is `<user>:<pass>`.
 
-cloud.id: '${ELASTIC_CLOUD_ID}'
-cloud.auth: '${ELASTIC_CLOUD_AUTH}'
+cloud.id: '${BLOCKCHAIN_CLUSTER_UUID}'
+cloud.auth: '${BLOCKCHAIN_CLUSTER_AUTH}'
 
 #================================ Outputs =====================================
 
