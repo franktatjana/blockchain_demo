@@ -1,9 +1,6 @@
 ---
 version: "2.1"
 services: 
-
-  env_file: .env
-
   #Auditbeat container
   auditbeat:
     image: "docker.elastic.co/beats/auditbeat:${ELASTIC_VERSION}"
@@ -12,7 +9,7 @@ services:
     user: root
     volumes:
       #Mount the Auditbeat configuration so users can make edits.
-      - ./config/beats/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml
+      - ./beats/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock
     command: auditbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}
@@ -29,7 +26,7 @@ services:
     # Auditbeat must run in the main process namespace.
     pid: host
     healthcheck:
-      test: auditbeat --strict.perms=false test config
+      test: auditbeat --strict.perms=false test beats
       interval: 30s
       timeout: 15s
       retries: 5
@@ -44,7 +41,7 @@ services:
     image: "docker.elastic.co/beats/heartbeat:${ELASTIC_VERSION}"
     volumes:
       #Mount the Heartbeat configuration so users can make edits.
-      - ./config/beats/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
+      - ./beats/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock
     command: heartbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} 
@@ -58,7 +55,7 @@ services:
     networks: ['stack']
     restart: on-failure
     healthcheck:
-      test: heartbeat test config
+      test: heartbeat test beats
       interval: 30s
       timeout: 15s
       retries: 5
@@ -71,11 +68,11 @@ services:
     image: "docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}"
     volumes:
       #Mount the Filebeat configuration so users can make edits.
-      - ./config/beats/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./beats/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
       #Mount the prospectors directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
      # - ./config/beats/filebeat/prospectors.d/:/usr/share/filebeat/prospectors.d/
        #Mount the module directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
-      - ./config/beats/filebeat/modules.d/:/usr/share/filebeat/modules.d/
+      - ./beats/filebeat/modules.d/:/usr/share/filebeat/modules.d/
       #Mount the hosts system log directory. This represents the logs of the VM hosting docker. Consumed by the Filebeat system module.
       - /private/var/log/:/var/log/host/:ro
       #Mount the Docker logs for indexing by the custom prospector ./config/filebeat/prospectors.d.
@@ -98,7 +95,7 @@ services:
     #     target: /usr/share/filebeat/certs/ca/ca.crt
     restart: on-failure
     healthcheck:
-      test: filebeat test config
+      test: filebeat test beats
       interval: 30s
       timeout: 15s
       retries: 5
@@ -111,9 +108,9 @@ services:
     image: docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
     volumes:
       #Mount the metricbeat configuration so users can make edits.
-      - ./config/beats/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      - ./beats/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
       #Mount the modules.d directory into the container. This allows user to potentially make changes to the modules and they will be dynamically loaded.
-      - ./config/beats/metricbeat/modules.d/:/usr/share/metricbeat/modules.d/
+      - ./beats/metricbeat/modules.d/:/usr/share/metricbeat/modules.d/
       #The commented sections below enable Metricbeat to monitor the Docker host rather than the Metricbeat container. These are used by the system module.
       - /proc:/hostfs/proc:ro
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
@@ -133,7 +130,7 @@ services:
     networks: ['stack']
     restart: on-failure
     healthcheck:
-      test: metricbeat test config
+      test: metricbeat test beats
       interval: 30s
       timeout: 15s
       retries: 5
@@ -147,7 +144,7 @@ services:
     image: "docker.elastic.co/beats/packetbeat:${ELASTIC_VERSION}"
     volumes:
       #Mount the packetbeat configuration so users can make edits.
-      - ./config/beats/packetbeat/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
+      - ./beats/packetbeat/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock
     # Packetbeat needs some elevated privileges to capture network traffic. We'll grant them with POSIX capabilities.
@@ -165,7 +162,7 @@ services:
     #   - source: ca.crt
     #     target: /usr/share/packetbeat/certs/ca/ca.crt
     healthcheck:
-      test: packetbeat test config
+      test: packetbeat test beats
       interval: 30s
       timeout: 15s
       retries: 5
@@ -174,10 +171,10 @@ services:
   configure_stack:
     container_name: configure_stack
     image: docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
-    volumes: ['./init/configure-stack.sh:/usr/local/bin/configure-stack.sh:ro','./init/pipelines/:/usr/local/bin/pipelines/','./init/templates/:/usr/local/bin/templates/']
+    volumes: ['./configure-stack.sh:/usr/local/bin/configure-stack.sh:ro']
     command: ['/bin/bash', '-c', 'cat /usr/local/bin/configure-stack.sh | tr -d "\r" | bash']
     networks: ['stack']
-    environment: ['ELASTIC_VERSION=${ELASTIC_VERSION}','ES_PASSWORD=${ES_PASSWORD}','DEFAULT_INDEX_PATTERN=${DEFAULT_INDEX_PATTERN}']
+    environment: ['ELASTIC_VERSION=${ELASTIC_VERSION}','ES_PASSWORD=${BLOCKCHAIN_CLUSTER_PASS}','DEFAULT_INDEX_PATTERN=${DEFAULT_INDEX_PATTERN}']
 
 volumes:
   esdata:
