@@ -12,7 +12,7 @@ services:
       - ./beats/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock  
-    command: ./auditbeat -c -e ./beats/auditbeat/auditbeat.yml -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS}  -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid= ${MONITORING_CLUSTER_UUID}
+    command: ./auditbeat -c -e ./beats/auditbeat/auditbeat.yml -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS}  -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
     cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
     networks: ['stack']
     restart: on-failure
@@ -44,7 +44,7 @@ services:
       - ./beats/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock
-    command: heartbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}  -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid= ${MONITORING_CLUSTER_UUID}
+    command: heartbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}  -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
     # secrets:
     #   - source: heartbeat.yml
     #     target: /usr/share/heartbeat/heartbeat.yml
@@ -85,7 +85,7 @@ services:
       - /opt/corda/logs/:/var/corda/logs/
 
     networks: ['stack']
-    command: filebeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid= ${MONITORING_CLUSTER_UUID}
+    command: filebeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
     # secrets:
     #   - source: filebeat.yml
     #     target: /usr/share/filebeat/filebeat.yml
@@ -119,7 +119,7 @@ services:
       #We mount the host filesystem so we can report on disk usage with the system module.
       - /:/hostfs:ro
     
-    command: metricbeat -e -system.hostfs=/hostfs -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid= ${MONITORING_CLUSTER_UUID}
+    command: metricbeat -e -system.hostfs=/hostfs -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
     # secrets:
     #   - source: metricbeat.yml
     #     target: /usr/share/metricbeat/metricbeat.yml
@@ -153,7 +153,7 @@ services:
     # rather than being isolated to the container's virtual interface.
     network_mode: host
     restart: on-failure
-    command: packetbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid= ${MONITORING_CLUSTER_UUID}
+    command: packetbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
     # secrets:
     #   - source: packetbeat.yml
     #     target: /usr/share/packetbeat/packetbeat.yml
