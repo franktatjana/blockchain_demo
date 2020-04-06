@@ -221,10 +221,10 @@ monitoring.elasticsearch:
 # uncomment the following line.
 #monitoring.elasticsearch: ${env:MONITORING_ES_HOST}'
 
-# monitoring:
-#   enabled: true
-#   cloud.id: '${MONITORING_CLUSTER_UUID}'
-#   cloud.auth: '${MONITORING_CLUSTER_AUTH}'
+monitoring:
+  enabled: true
+  cloud.id: '${MONITORING_CLUSTER_UUID}'
+  cloud.auth: '${MONITORING_CLUSTER_AUTH}'
 
 #================================= Migration ==================================
 

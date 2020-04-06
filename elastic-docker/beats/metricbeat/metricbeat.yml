@@ -158,9 +158,9 @@ monitoring.elasticsearch:
 # that it is pointing to your Elasticsearch monitoring cluster, you can simply
 # uncomment the following line.
 #monitoring.elasticsearch: ${env:MONITORING_ES_HOST}'
-# monitoring:
-#   cloud.id: '${MONITORING_CLUSTER_UUID}'
-#   cloud.auth: '${MONITORING_CLUSTER_AUTH}'
+monitoring:
+  cloud.id: '${MONITORING_CLUSTER_UUID}'
+  cloud.auth: '${MONITORING_CLUSTER_AUTH}'
 
 #================================= Migration ==================================
 

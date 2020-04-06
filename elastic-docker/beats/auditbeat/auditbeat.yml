@@ -216,9 +216,9 @@ monitoring.elasticsearch:
 # that it is pointing to your Elasticsearch monitoring cluster, you can simply
 # uncomment the following line.
 #monitoring.elasticsearch: ${MONITORING_ES}
-#monitoring:
- # cloud.id: '${MONITORING_CLUSTER_UUID}'
-  #cloud.auth: '${MONITORING_CLUSTER_AUTH}'
+monitoring:
+ cloud.id: '${MONITORING_CLUSTER_UUID}'
+  cloud.auth: '${MONITORING_CLUSTER_AUTH}'
 #================================= Migration ==================================
 
 # This allows to enable 6.7 migration aliases
