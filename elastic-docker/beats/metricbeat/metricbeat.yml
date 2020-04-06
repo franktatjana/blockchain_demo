@@ -126,7 +126,7 @@ processors:
 
 # Sets log level. The default log level is info.
 # Available log levels are: error, warning, info, debug
-logging.level: error
+logging.level: info
 
 # At debug level, you can selectively enable logging only for some components.
 # To enable all selectors use ["*"]. Examples of other selectors are "beat",
@@ -166,3 +166,4 @@ monitoring:
 
 # This allows to enable 6.7 migration aliases
 #migration.6_to_7.enabled: true
+xpack.monitoring.enabled: true
