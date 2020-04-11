@@ -178,9 +178,9 @@ cloud.auth: '${BLOCKCHAIN_CLUSTER_AUTH}'
 # Configure what output to use when sending the data collected by the beat.
 
 #-------------------------- Elasticsearch output ------------------------------
-#output.elasticsearch:
+output.elasticsearch:
   # Array of hosts to connect to.
-  #hosts: '${ELASTICSEARCH_HOST}'
+  hosts: ["https://8d5a1f48762b49cfb6c818307cb84008.europe-west3.gcp.cloud.es.io:9243"]
 
   # Optional protocol and basic auth credentials.
   #protocol: "https"
