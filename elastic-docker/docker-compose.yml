@@ -82,9 +82,10 @@ services:
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock:ro
       #Mount the logs from CORDA log directory.
-      - /opt/corda/network/nodes/partyb/logs:/var/corda/logs/
-      - /opt/corda/network/nodes/partya/logs:/var/corda/logs/
-      - /opt/corda/network/nodes/notary/logs:/var/corda/logs/
+      -
+      - /opt/corda/network/nodes/partyb/logs:/opt/corda/network/nodes/partyb/logs
+      - /opt/corda/network/nodes/partya/logs:/opt/corda/network/nodes/partya/logs
+      - /opt/corda/network/nodes/notary/logs:/opt/corda/network/nodes/notary/logs
 
     networks: ['stack']
     command: filebeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
