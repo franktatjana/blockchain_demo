@@ -31,17 +31,17 @@ filebeat.inputs:
   enabled: true
   tag: "notary"
   paths:
-    - /opt/corda/network/nodes/notary/logs
+    - /opt/corda/network/nodes/notary/logs/*.log
 - type: log
   enabled: true
   tag: "partya"
   paths:
-    - /opt/corda/network/nodes/partya/logs
+    - /opt/corda/network/nodes/partya/logs/*.log
 - type: log
   enabled: true
   tag: "partyb"
   paths:
-    - /opt/corda/network/nodes/partyb/logs
+    - /opt/corda/network/nodes/partyb/logs/*.log
 
 #============================= Filebeat modules ===============================
 

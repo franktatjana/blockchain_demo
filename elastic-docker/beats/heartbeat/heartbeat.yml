@@ -21,63 +21,26 @@ heartbeat.config.monitors:
 
 # Configure monitors inline
 heartbeat.monitors:
-- type: http
+- type: tcp
   enabled: true
   schedule: '@every 5s'
-  urls: ["http://34.91.190.250:10003"]
-  ipv4: true
-  ipv6: true
-  mode: any
+  hosts: ["34.91.190.250"]
+  ports: [10002, 10003, 10004, 11001]
   name: "notary"
-  timeout: 3s
-  check.request:
-    method: "GET"
-  check.response:
-    status: 200
 
-
-- type: http
+- type: tcp
   enabled: true
   schedule: '@every 5s'
-  urls: ["34.91.190.250:10013"]
-  ipv4: true
-  ipv6: true
-  mode: any
-  name: "partya_RCP"
-  timeout: 3s
-  check.request:
-    method: "GET"
-  check.response:
-    status: 200
+  hosts: ["34.91.190.250"]
+  ports: [10012, 10013, 10014, 1102]
+  name: "party_a_Bank of Breakfast TeaA, London, GB"
 
-- type: http
+- type: tcp
   enabled: true
   schedule: '@every 5s'
-  urls: ["34.91.190.250:10012"]
-  ipv4: true
-  ipv6: true
-  mode: any
-  name: "partya"
-  timeout: 3s
-  check.request:
-    method: "GET"
-  check.response:
-    status: 200
-
-- type: http
-  enabled: true
-  schedule: '@every 5s'
-  urls: ["34.91.190.250:10023"]
-  ipv4: true
-  ipv6: true
-  mode: any
-  name: "partyb"
-  timeout: 3s
-  check.request:
-    method: "GET"
-  check.response:
-    status: 200
-
+  hosts: ["34.91.190.250"]
+  ports: [10022, 10023, 10024, 11003]
+  name: "party_b_Bank of Lunch Tea BB, London, GB"
 
   # Total test connection and data exchange timeout
   #timeout: 16s
