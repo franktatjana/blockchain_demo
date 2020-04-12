@@ -28,7 +28,7 @@ heartbeat.monitors:
   ipv4: true
   ipv6: true
   mode: any
-  tags: "notary"
+  name: "notary"
   timeout: 3s
   check.request:
     method: "GET"
@@ -39,11 +39,11 @@ heartbeat.monitors:
 - type: http
   enabled: true
   schedule: '@every 5s'
-  urls: ["http://34.91.190.250:10013"]
+  urls: ["34.91.190.250:10013"]
   ipv4: true
   ipv6: true
   mode: any
-  tags: "partya"
+  name: "partya_RCP"
   timeout: 3s
   check.request:
     method: "GET"
@@ -53,11 +53,25 @@ heartbeat.monitors:
 - type: http
   enabled: true
   schedule: '@every 5s'
-  urls: ["http://34.91.190.250:10023"]
+  urls: ["34.91.190.250:10012"]
   ipv4: true
   ipv6: true
   mode: any
-  tags: "partyb"
+  name: "partya"
+  timeout: 3s
+  check.request:
+    method: "GET"
+  check.response:
+    status: 200
+
+- type: http
+  enabled: true
+  schedule: '@every 5s'
+  urls: ["34.91.190.250:10023"]
+  ipv4: true
+  ipv6: true
+  mode: any
+  name: "partyb"
   timeout: 3s
   check.request:
     method: "GET"
