@@ -181,7 +181,6 @@ logging.level: info
 # reporting is disabled by default.
 
 # Set to true to enable the monitoring reporter.
-monitoring.enabled: true
 monitoring.cluster_uuid: '${MONITORING_CLUSTER_UUID}'
 monitoring.elasticsearch:
     hosts: ${MONITORING_ES_HOST}
