@@ -33,14 +33,14 @@ heartbeat.monitors:
   schedule: '@every 5s'
   hosts: ["34.91.190.250"]
   ports: [10012, 10013, 10014, 1102]
-  name: "party_a_Bank of Breakfast TeaA, London, GB"
+  name: "party_a_Bank Alfa-Bank, Moscow, RU"
 
 - type: tcp
   enabled: true
   schedule: '@every 5s'
   hosts: ["34.91.190.250"]
   ports: [10022, 10023, 10024, 11003]
-  name: "party_b_Bank of Lunch Tea BB, London, GB"
+  name: "party_b_Bank Barclays, London, GB"
 
   # Total test connection and data exchange timeout
   #timeout: 16s

@@ -82,7 +82,6 @@ services:
       #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock:ro
       #Mount the logs from CORDA log directory.
-      -
       - /opt/corda/network/nodes/partyb/logs:/opt/corda/network/nodes/partyb/logs
       - /opt/corda/network/nodes/partya/logs:/opt/corda/network/nodes/partya/logs
       - /opt/corda/network/nodes/notary/logs:/opt/corda/network/nodes/notary/logs

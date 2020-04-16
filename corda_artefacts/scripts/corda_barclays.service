@@ -1,0 +1,13 @@
+[Unit]
+Description=Corda Node - Bank Barclays - party B
+Requires=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/corda/network/nodes/barclays-node
+ExecStart=sudo /usr/bin/java -jar /opt/corda/network/nodes/barclays-node/corda.jar
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

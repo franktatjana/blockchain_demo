@@ -1,0 +1,13 @@
+[Unit]
+Description=Corda Node - Notary Munich - party N
+Requires=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/corda/network/nodes/notary_node
+ExecStart=sudo /usr/bin/java -jar /opt/corda/network/nodes/notary_node/corda.jar
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
