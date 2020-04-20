@@ -134,7 +134,6 @@ services:
     #     target: /usr/share/metricbeat/metricbeat.keystore
     #   - source: ca.crt
     #     target: /usr/share/metricbeat/certs/ca/ca.crt
-    networks: ['stack']
     restart: on-failure
     healthcheck:
       test: metricbeat test beats
