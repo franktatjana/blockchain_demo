@@ -4,7 +4,7 @@
     var.project_id: elastic-sa
     var.topic: projects/elastic-sa/topics/tfrank_blockchain_demo
     var.subscription_name: tfrank_blockchain_demo
-    var.credentials_file: /credentials/gcp-service-account-tfrank.json
+    var.credentials_file: elastic-sa-e91ab3fb6ecb.json
     var.keep_original_message: true
 
   vpcflow:
@@ -12,7 +12,5 @@
     var.project_id: elastic-sa
     var.topic: projects/elastic-sa/topics/tfrank_blockchain_demo
     var.subscription_name: tfrank_blockchain_demo
-    var.credentials_file: /credentials/gcp-service-account-tfrank.json
+    var.credentials_file: elastic-sa-e91ab3fb6ecb.json
     var.keep_original_message: false
-    #resource.type="gce_instance" 
-    #resource.labels.instance_id="5627280447020327940"
