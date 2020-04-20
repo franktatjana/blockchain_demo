@@ -129,6 +129,9 @@ services:
       #Mount the modules.d directory into the container. This allows user to potentially make changes to the modules and they will be dynamically loaded.
       - ./beats/metricbeat/modules.d/:/usr/share/metricbeat/modules.d/
       - ./beats/filebeat/modules.d/:/usr/share/filebeat/modules.d/
+      #mount root directories for GCP credentials
+      - ./beats/metricbeat/:/usr/share/metricbeat/
+      - ./beats/filebeat/:/usr/share/filebeat/
       #The commented sections below enable Metricbeat to monitor the Docker host rather than the Metricbeat container. These are used by the system module.
       - /proc:/hostfs/proc:ro
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
