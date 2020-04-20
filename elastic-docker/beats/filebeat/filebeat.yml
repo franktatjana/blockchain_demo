@@ -18,30 +18,57 @@ filebeat.inputs:
 # you can use different inputs for various configurations.
 # Below are the input specific configurations.
 
+#system logs
 - type: log
-
-  # Change to true to enable this input configuration.
   enabled: true
-
-  # Paths that should be crawled and fetched. Glob based paths.
   paths:
     - /var/log/*.log
 
+#notary node logs
 - type: log
   enabled: true
+
+  multiline.pattern: '^[[:space:]]+(at|\.{3})[[:space:]]+\b|^Caused by:'
+  multiline.negate: false
+  multiline.match: after
   tag: "notary"
+  fields.app_id: "notary"
+  fields_under_root: true
   paths:
     - /opt/corda/network/nodes/notary/logs/*.log
+
+#alfa bank node logs
 - type: log
   enabled: true
-  tag: "partya"
+
+  multiline.pattern: '^[[:space:]]+(at|\.{3})[[:space:]]+\b|^Caused by:'
+  multiline.negate: false
+  multiline.match: after
+  tag: "alfa bank"
+  fields.app_id: "alfa bank"
+  fields_under_root: true
   paths:
-    - /opt/corda/network/nodes/partya/logs/*.log
+    - /opt/corda/network/nodes/alfa_node/logs/*.log
+
+#barclays bank node logs
 - type: log
   enabled: true
-  tag: "partyb"
+
+  multiline.pattern: '^[[:space:]]+(at|\.{3})[[:space:]]+\b|^Caused by:'
+  multiline.negate: false
+  multiline.match: after
+  tag: "barclays bank"
+  fields.app_id: "barclays bank"
+  fields_under_root: true
   paths:
-    - /opt/corda/network/nodes/partyb/logs/*.log
+    - /opt/corda/network/nodes/barclays_node/logs/*.log
+
+#This input captures the docker logs.
+- type: docker
+  paths:
+    - /hostfs/var/lib/docker/containers/*/*.log
+  processors:
+  - add_docker_metadata: ~
 
 #============================= Filebeat modules ===============================
 
@@ -61,7 +88,7 @@ setup.template.settings:
   enabled: true
   index.number_of_shards: 1
   index.codec: best_compression
-  #_source.enabled: false
+  _source.enabled: true
 
 #================================ General =====================================
 
@@ -83,7 +110,7 @@ setup.template.settings:
 # These settings control loading the sample dashboards to the Kibana index. Loading
 # the dashboards is disabled by default and can be enabled either by setting the
 # options here or by using the `setup` command.
-setup.dashboards.enabled: true
+setup.dashboards.enabled: false
 
 # The URL from where to download the dashboards archive. By default this URL
 # has a value which is computed based on the Beat name and version. For released
@@ -168,7 +195,7 @@ processors:
 
 # Sets log level. The default log level is info.
 # Available log levels are: error, warning, info, debug
-logging.level: info
+logging.level: error
 
 # At debug level, you can selectively enable logging only for some components.
 # To enable all selectors use ["*"]. Examples of other selectors are "beat",
@@ -180,7 +207,7 @@ logging.level: info
 # cluster.  This requires xpack monitoring to be enabled in Elasticsearch.  The
 # reporting is disabled by default.
 
-# Set to true to enable the monitoring reporter.
+# Set to true to enable the monitoring reporter.s
 monitoring.cluster_uuid: '${MONITORING_CLUSTER_UUID}'
 monitoring.elasticsearch:
     hosts: ${MONITORING_ES_HOST}
