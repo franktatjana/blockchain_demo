@@ -4,7 +4,7 @@
     var.project_id: elastic-sa
     var.topic: tfrank_blockchain_demo
     var.subscription_name: tfrank_blockchain_demo_sub
-    var.credentials_file: ${path.config}/elastic-sa-e91ab3fb6ecb.json
+    var.credentials_file: ${path.config}/modules.d/elastic-sa-e91ab3fb6ecb.json
     var.keep_original_message: true
 
   vpcflow:
@@ -12,5 +12,5 @@
     var.project_id: elastic-sa
     var.topic: tfrank_blockchain_demo
     var.subscription_name: tfrank_blockchain_demo_sub
-    var.credentials_file: ${path.config}/elastic-sa-e91ab3fb6ecb.json
+    var.credentials_file: ${path.config}/modules.d/elastic-sa-e91ab3fb6ecb.json
     var.keep_original_message: false
