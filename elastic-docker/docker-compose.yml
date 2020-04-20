@@ -130,8 +130,8 @@ services:
       - ./beats/metricbeat/modules.d/:/usr/share/metricbeat/modules.d/
       - ./beats/filebeat/modules.d/:/usr/share/filebeat/modules.d/
       #mount root directories for GCP credentials
-      - ./beats/metricbeat/elastic-sa-e91ab3fb6ecb.json:/usr/share/metricbeat/elastic-sa-e91ab3fb6ecb.json
-      - ./beats/filebeat/elastic-sa-e91ab3fb6ecb.json:/usr/share/filebeat/elastic-sa-e91ab3fb6ecb.json
+      - ./beats/metricbeat/modules.d/elastic-sa-e91ab3fb6ecb.json:/usr/share/metricbeat/modules.d/elastic-sa-e91ab3fb6ecb.json
+      - ./beats/filebeat/modules.d/elastic-sa-e91ab3fb6ecb.json:/usr/share/filebeat/modules.d/elastic-sa-e91ab3fb6ecb.json
       #The commented sections below enable Metricbeat to monitor the Docker host rather than the Metricbeat container. These are used by the system module.
       - /proc:/hostfs/proc:ro
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
