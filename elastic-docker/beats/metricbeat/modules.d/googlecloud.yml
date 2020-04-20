@@ -5,7 +5,7 @@
     - loadbalancing
     - storage
   zone: "europe-west4-a"
-  project_id: "tfrank-blockchain-demo-bootstrap-41"
+  project_id: "elastic-sa"
   credentials_file_path: "${path.config}/modules.d/elastic-sa-dd4f67d589f9.json"
   exclude_labels: false
   period: 300s
