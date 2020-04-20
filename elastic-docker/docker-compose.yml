@@ -69,32 +69,21 @@ services:
     volumes:
     #Mount the Filebeat configuration so users can make edits.
       - ./beats/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - ./beats/metricbeat/metricbeat.yml/:/usr/share/metricbeat/metricbeat.yml/
-    
-    #Mount the prospectors directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
-    # - ./config/beats/filebeat/prospectors.d/:/usr/share/filebeat/prospectors.d/
-    
     #Mount the module directory. Users can in turn add propspectors to this directory and they will be dynamically loaded.
       - ./beats/filebeat/modules.d/:/usr/share/filebeat/modules.d/
-      - ./beats/metricbeat/modules.d/:/usr/share/metricbeat/modules.d/
-    
+      - ./beats/filebeat/modules.d/elastic-sa-dd4f67d589f9.json:/usr/share/filebeat/modules.d/elastic-sa-dd4f67d589f9.json
     #Mount the hosts system log directory. This represents the logs of the VM hosting docker. Consumed by the Filebeat system module.
       - /private/var/log/:/var/log/host/:ro
-    
     #Mount the Docker logs for indexing by the custom prospector ./config/filebeat/prospectors.d.
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
-    
     #Named volume fsdata. This is used to persist the registry file between restarts, so to avoid data duplication.
       - filebeatdata:/usr/share/filebeat/data/
-    
     #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    
     #Mount the logs from CORDA log directory
       - /opt/corda/network/nodes/barclays_node/logs:/opt/corda/network/nodes/barclays_node/logs
       - /opt/corda/network/nodes/alfa_node/logs:/opt/corda/network/nodes/alfa_node/logs
       - /opt/corda/network/nodes/notary/logs:/opt/corda/network/nodes/notary/logs
-    
     #Mount the node configs from CORDA directory
       - /opt/corda/network/nodes/barclays_node/:/opt/corda/network/nodes/barclays_node/
       - /opt/corda/network/nodes/alfa_node/:/opt/corda/network/nodes/alfa_node/
@@ -125,13 +114,10 @@ services:
     volumes:
       #Mount the metricbeat configuration so users can make edits.
       - ./beats/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
-      - ./beats/filebeat/metricbeat.yml:/usr/share/filebeat/metricbeat.yml
       #Mount the modules.d directory into the container. This allows user to potentially make changes to the modules and they will be dynamically loaded.
       - ./beats/metricbeat/modules.d/:/usr/share/metricbeat/modules.d/
-      - ./beats/filebeat/modules.d/:/usr/share/filebeat/modules.d/
-      #mount root directories for GCP credentials
+      #mount for GCP credentials
       - ./beats/metricbeat/modules.d/elastic-sa-dd4f67d589f9.json:/usr/share/metricbeat/modules.d/elastic-sa-dd4f67d589f9.json
-      - ./beats/filebeat/modules.d/elastic-sa-dd4f67d589f9.json:/usr/share/filebeat/modules.d/elastic-sa-dd4f67d589f9.json
       #The commented sections below enable Metricbeat to monitor the Docker host rather than the Metricbeat container. These are used by the system module.
       - /proc:/hostfs/proc:ro
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
@@ -140,7 +126,7 @@ services:
       #We mount the host filesystem so we can report on disk usage with the system module.
       - /:/hostfs:ro
     
-    command: metricbeat -e -system.hostfs=/hostfs -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
+    command: metricbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
     # secrets:
     #   - source: metricbeat.yml
     #     target: /usr/share/metricbeat/metricbeat.yml
