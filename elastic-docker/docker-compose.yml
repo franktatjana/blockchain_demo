@@ -125,7 +125,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       #We mount the host filesystem so we can report on disk usage with the system module.
       - /:/hostfs:ro
-    
+    networks: ['stack']
     command: metricbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
     # secrets:
     #   - source: metricbeat.yml
@@ -174,13 +174,13 @@ services:
       retries: 5
 
   #Configure Stack container. This short lived container configures the stack once Kibana and Elasticsearch are available. More specifically, using a script it sets passwords, import dashboards, sets a default index pattern, loads templates and pipelines
-  # configure_stack:
-  #   container_name: configure_stack
-  #   image: docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
-  #   volumes: ['./configure-stack.sh:/usr/local/bin/configure-stack.sh:ro']
-  #   command: ['/bin/bash', '-c', 'cat /usr/local/bin/configure-stack.sh | tr -d "\r" | bash']
-  #   networks: ['stack']
-  #   environment: ['ELASTIC_VERSION=${ELASTIC_VERSION}','ES_PASSWORD=${BLOCKCHAIN_CLUSTER_PASS}']
+  configure_stack:
+    container_name: configure_stack
+    image: docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
+    volumes: ['./configure-stack.sh:/usr/local/bin/configure-stack.sh:ro']
+    command: ['/bin/bash', '-c', 'cat /usr/local/bin/configure-stack.sh | tr -d "\r" | bash']
+    networks: ['stack']
+    environment: ['ELASTIC_VERSION=${ELASTIC_VERSION}','ES_PASSWORD=${BLOCKCHAIN_CLUSTER_PASS}']
 
 volumes:
   esdata:
