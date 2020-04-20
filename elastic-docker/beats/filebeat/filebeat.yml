@@ -19,10 +19,11 @@ filebeat.inputs:
 # Below are the input specific configurations.
 
 #system logs
-- type: log
-  enabled: true
-  paths:
-    - /var/log/*.log
+# - type: log
+#   enabled: true
+#   fields.app_id: "system"
+#   paths:
+#     - /var/log/*.log
 
 #notary node logs
 - type: log
@@ -85,8 +86,8 @@ filebeat.config.modules:
 #==================== Elasticsearch template setting ==========================
 
 setup.template: 
-  name: "filebeat"
-  pattern: "filebeat-*"
+  name: "filebeat-%{[fields.app_id]}"
+  pattern: "filebeat-%{[fields.app_id]}*"
   settings:
     enabled: true
     index.number_of_shards: 1
