@@ -1,0 +1,11 @@
+- module: googlecloud
+  metricsets:
+    - compute
+    - pubsub
+    - loadbalancing
+    - storage
+  zone: "europe-west4-a"
+  project_id: "tfrank-blockchain-demo-bootstrap-41"
+  credentials_file_path: "/credentials/gcp.json"
+  exclude_labels: false
+  period: 300s
