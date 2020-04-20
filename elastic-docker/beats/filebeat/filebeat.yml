@@ -70,7 +70,7 @@ filebeat.inputs:
     - /hostfs/var/lib/docker/containers/*/*.log
   containers.ids: 
     #metricbeat
-    - '447e0ca361c6'
+    - '89f2c502f350'
     #heartbeat
     - '61a36523a029'
     #packetbeat
@@ -78,7 +78,7 @@ filebeat.inputs:
     #auditbeat
     - '8f1d7da3767d'
     #filebeat
-    - 'e8726a108c32'
+    - '70aa04fb960e'
   processors:
   - add_docker_metadata: ~
 
