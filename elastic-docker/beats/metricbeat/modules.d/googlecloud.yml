@@ -9,3 +9,9 @@
   credentials_file_path: "${path.config}/modules.d/elastic-sa-dd4f67d589f9.json"
   exclude_labels: false
   period: 300s
+
+  #Error creating runner from config: 1 error: 4 errors: missing field accessing 'credentials_file_path' 
+  #(source:'/usr/share/metricbeat/modules.d/googlecloud.yml'); 
+  #metricset 'googlecloud/pubsub' not found; 
+  #metricset 'googlecloud/loadbalancing' not found; 
+  #metricset 'googlecloud/storage' not found
