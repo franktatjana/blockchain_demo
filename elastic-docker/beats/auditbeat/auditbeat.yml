@@ -19,8 +19,8 @@ auditbeat.modules:
     - /usr/sbin
     - /usr/local/sbin
     #Special Check for Corda configuration, /node.conf
-    - /opt/corda/network/nodes/partya/node.conf
-    - /opt/corda/network/nodes/partyb/node.conf
+    - /opt/corda/network/nodes/alfa_node/node.conf
+    - /opt/corda/network/nodes/barclays_node/node.conf
     - /opt/corda/network/nodes/notary/node.conf
 
   # Collect Linux kernel events.
@@ -182,7 +182,7 @@ processors:
 
 # Sets log level. The default log level is info.
 # Available log levels are: error, warning, info, debug
-logging.level: info
+logging.level: error
 
 # At debug level, you can selectively enable logging only for some components.
 # To enable all selectors use ["*"]. Examples of other selectors are "beat",

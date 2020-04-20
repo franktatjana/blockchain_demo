@@ -1,0 +1,11 @@
+- module: googleclcoud
+  audit:
+    enabled: true
+    var.project_id: elastic-sa
+    var.topic: projects/elastic-sa/topics/tfrank_blockchain_demo
+    var.subscription_name: filebeat-googlecloud-audit-sub
+    var.credentials_file: ./credentials/gcp-service-account-tfrank.json
+    var.keep_original_message: false
+
+    #resource.type="gce_instance" 
+    #resource.labels.instance_id="5627280447020327940"

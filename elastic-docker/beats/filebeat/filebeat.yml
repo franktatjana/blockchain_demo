@@ -157,6 +157,7 @@ cloud.auth: '${BLOCKCHAIN_CLUSTER_AUTH}'
 output.elasticsearch:
   # Array of hosts to connect to.
   hosts: ["https://8d5a1f48762b49cfb6c818307cb84008.europe-west3.gcp.cloud.es.io:9243"]
+  index: "filebeat-%{[fields.app_id]}-%{+yyyy.MM.dd}"
 
   # Protocol - either `http` (default) or `https`.
   #protocol: "https"
