@@ -1,4 +1,4 @@
-- module: googleclcoud
+- module: googlecloud
   audit:
     enabled: true
     var.project_id: elastic-sa
