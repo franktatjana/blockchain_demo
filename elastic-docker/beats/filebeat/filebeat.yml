@@ -45,8 +45,8 @@ filebeat.inputs:
   multiline.pattern: '^[[:space:]]+(at|\.{3})[[:space:]]+\b|^Caused by:'
   multiline.negate: false
   multiline.match: after
-  tag: "alfa bank"
-  fields.app_id: "alfa bank"
+  tag: "alfa_bank"
+  fields.app_id: "alfa_bank"
   fields_under_root: true
   paths:
     - /opt/corda/network/nodes/alfa_node/logs/*.log
@@ -58,8 +58,8 @@ filebeat.inputs:
   multiline.pattern: '^[[:space:]]+(at|\.{3})[[:space:]]+\b|^Caused by:'
   multiline.negate: false
   multiline.match: after
-  tag: "barclays bank"
-  fields.app_id: "barclays bank"
+  tag: "barclays_bank"
+  fields.app_id: "barclays_bank"
   fields_under_root: true
   paths:
     - /opt/corda/network/nodes/barclays_node/logs/*.log
