@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "elastic-sa",
+  "private_key_id": "dd4f67d589f9db588dc64e5202ce6e9435d5c29c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCejvK6kjwIEorT\nbVRSK8dbJ4ChGHr7zUXmaC63UKo+BzmIMyz6/SVeIvLCSRJ8y2sOVkQJ++FiWOok\nVMtjoPEv9s2LaApkuonrNomf8wRUK8ie9HOPfKKMZ1lCsxwk5XdXvMYBN8QVChSl\n+D5/9/cnekkIfFotagMEqw4chP8ALt40sfLbp8v7Bg9s0ZYYfuK+HqWLh1zMBpBa\nJeWkD4PgsZU+OeTsTY88LY1TDGgeu2dmO91UcONXjkaVD9InuzL8wjMNNv63S8Xy\ny3kfIREdMafP62FZF2xKMLX5KVGAr0hNut9ItSV6EXk6A+CM/xjn62nP8DDzxdIS\nbspNW049AgMBAAECggEAEkltUDxGZS3ySfEtjO6Upvw21x2SLZFesvSoEqdggxfl\nOEKiuO3STfmc4vB3i+IQHk6vuTEOLQARPRB0hrCMsJn32dCthjGHb5PSKprmEGke\nUcriuxVGUAgpYMp0gALhEULp2UEbwctwVzX6y1qHbEurualR4zP7ViH+Via2nEgd\nAtc1BMwi7NFHL227DveFZEUpdaovH+eZvv3naXdE05fUsSCxcvSjEh3C8gjxH8w6\naAPBVDZKEN2w9GqHpv5hPNZj0/QW7YirSAYE4XRcAj35wjCy+NAnBV33ZoX0zIg2\nwlyYXoeY0nLLT1TwU0Thbnv6cGMT46wpMbQwyzog9wKBgQDQ2CU3KqCSJvRIDBHR\ntN7SOui8orjbnuKs9pHAuSW5ls0cPn0leRjkP4569kEzZssp+JZ9610KCp0Qdr/M\nkvL1LFaANN+Fjwvh+asKE7iFknfLesa0xB4QdL/tgLKc25cH14nCzci+ZnfhMpDp\nbR8xy6d7iFOQeGFEVtimJgyQWwKBgQDCXB51wGZKAKJmZ048+T1S4t9IGsJAR6+c\nPmKhedFpU3AwsJJxU2ZRt1BXPgcHyHAOI4STYj+3hxqSW39rW3DM52ndNCnsW+WR\nV8ONBQhoouRmerBLU4SIXvvOkT5rz0dAmDfk6eFDxDTtDafYwPdeB5MI58ugvpZl\niN8PxGDfRwKBgDaT9g3XtwTa50YY2WNLeFvKh14czGCgwi5fdbG+8QvyTAIQlpX/\ncrDbpzmdN2bee0OpsnKP2s2v/mH6Fp+424OVJbn1l2CJBJr2q2tDwhouL95eZKWD\nBzRXvnysAIGbpXmoK1lcfBS+JKAWneZS3S8fQNK4ytXbj9fTNmUdVnU3AoGBAJGo\nbd97aG1PWmX6R8UkWNP0WLd17lw0HSSwEETJwan4sRycR7OMeCMHibtILgakLW47\nKhE2UWAebUiAL9bqOXgmec0gWcbb/AjXyCK4QdwBL8Cpc9OP7MQywu3FJg2v0stT\nCJiSupKJycxaLo8f1oLulD/ZT17RVm8Ti3AKkTrjAoGBAIld+SS7l3fFW8lE/Q0j\nmUhhjTPsl40c7au6kz/q1qd2kI/yd2/VK80alOs/yC0U134eI8eSMgJgeU7mkCZF\n0OB/LT2rdVuhtij63jC6Aq9klJRyxOHzXAOtqMNsYoV+gFBorO5EZa8c0hbohl5k\nyy8aWQnUJCfj2t4NvTN72MhF\n-----END PRIVATE KEY-----\n",
+  "client_email": "tfrank-blockchain-demo@elastic-sa.iam.gserviceaccount.com",
+  "client_id": "110933597206316041621",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/tfrank-blockchain-demo%40elastic-sa.iam.gserviceaccount.com"
+}
