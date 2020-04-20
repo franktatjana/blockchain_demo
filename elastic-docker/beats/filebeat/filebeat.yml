@@ -68,6 +68,17 @@ filebeat.inputs:
 - type: docker
   paths:
     - /hostfs/var/lib/docker/containers/*/*.log
+  containers.ids: 
+    #metricbeat
+    - '447e0ca361c6'
+    #heartbeat
+    - '61a36523a029'
+    #packetbeat
+    - 'c6438b76c513'
+    #auditbeat
+    - '8f1d7da3767d'
+    #filebeat
+    - 'e8726a108c32'
   processors:
   - add_docker_metadata: ~
 
@@ -87,7 +98,7 @@ filebeat.config.modules:
 
 setup.template: 
   name: "filebeat-%{[fields.app_id]}"
-  pattern: "filebeat-%{[fields.app_id]}*"
+  pattern: "filebeat-%{[fields.app_id]}-*"
   settings:
     enabled: true
     index.number_of_shards: 1
