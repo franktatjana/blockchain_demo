@@ -5,7 +5,7 @@
   period: 1s
   hosts: ["34.91.190.250:7777"]
   namespace: "metrics"
-  jmx.mappings:s
+  jmx.mappings:
     - mbean: 'java.lang:type=Runtime'
       attributes:
         - attr: Uptime

@@ -173,15 +173,6 @@ services:
       timeout: 15s
       retries: 5
 
-  #Configure Stack container. This short lived container configures the stack once Kibana and Elasticsearch are available. More specifically, using a script it sets passwords, import dashboards, sets a default index pattern, loads templates and pipelines
-  configure_stack:
-    container_name: configure_stack
-    image: docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
-    volumes: ['./configure-stack.sh:/usr/local/bin/configure-stack.sh:ro']
-    command: ['/bin/bash', '-c', 'cat /usr/local/bin/configure-stack.sh | tr -d "\r" | bash']
-    networks: ['stack']
-    environment: ['ELASTIC_VERSION=${ELASTIC_VERSION}','ES_PASSWORD=${BLOCKCHAIN_CLUSTER_PASS}']
-
 volumes:
   esdata:
     driver: local
