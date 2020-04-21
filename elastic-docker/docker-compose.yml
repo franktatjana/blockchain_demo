@@ -81,13 +81,13 @@ services:
     #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock:ro
     #Mount the logs from CORDA log directory
-      - /opt/corda/network/nodes/barclays_node/logs:/opt/corda/network/nodes/barclays_node/logs
-      - /opt/corda/network/nodes/alfa_node/logs:/opt/corda/network/nodes/alfa_node/logs
-      - /opt/corda/network/nodes/notary/logs:/opt/corda/network/nodes/notary/logs
+      - /opt/corda/nodes/barclays/logs:/opt/corda/nodes/barclays/logs
+      - /opt/corda/nodes/alfa/logs:/opt/corda/nodes/alfa/logs
+      - /opt/corda/nodes/notary/logs:/opt/corda/nodes/notary/logs
     #Mount the node configs from CORDA directory
-      - /opt/corda/network/nodes/barclays_node/:/opt/corda/network/nodes/barclays_node/
-      - /opt/corda/network/nodes/alfa_node/:/opt/corda/network/nodes/alfa_node/
-      - /opt/corda/network/nodes/notary/:/opt/corda/network/nodes/notary/
+      - /opt/corda/nodes/barclays_node/:/opt/corda/nodes/barclays/
+      - /opt/corda/nodes/alfa/:/opt/corda/nodes/alfa/
+      - /opt/corda/nodes/notary/:/opt/corda/nodes/notary/
 
     networks: ['stack']
     command: filebeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}

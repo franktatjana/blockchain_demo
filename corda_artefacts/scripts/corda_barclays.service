@@ -5,8 +5,8 @@ Requires=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/opt/corda/network/nodes/barclays_node
-ExecStart=sudo /usr/bin/java -jar /opt/corda/network/nodes/barclays_node/corda.jar
+WorkingDirectory=/opt/corda/network/nodes/barclays
+ExecStart=sudo /usr/bin/java -jar /opt/corda/network/nodes/barclays/corda.jar
 Restart=on-failure
 
 [Install]

@@ -49,7 +49,7 @@ filebeat.inputs:
   fields.app_id: "alfa_bank"
   fields_under_root: true
   paths:
-    - /opt/corda/network/nodes/alfa_node/logs/*.log
+    - /opt/corda/network/nodes/alfa/logs/*.log
 
 #barclays bank node logs
 - type: log
@@ -62,7 +62,7 @@ filebeat.inputs:
   fields.app_id: "barclays_bank"
   fields_under_root: true
   paths:
-    - /opt/corda/network/nodes/barclays_node/logs/*.log
+    - /opt/corda/network/nodes/barclays/logs/*.log
 
 #This input captures the docker logs.
 - type: docker

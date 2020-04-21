@@ -3,9 +3,9 @@
   metricsets: ["jmx"]
   enabled: true
   period: 1s
-  hosts: ["localhost:8778"]
+  hosts: ["34.91.190.250:7777"]
   namespace: "metrics"
-  jmx.mappings:
+  jmx.mappings:s
     - mbean: 'java.lang:type=Runtime'
       attributes:
         - attr: Uptime
