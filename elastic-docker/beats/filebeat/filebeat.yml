@@ -36,7 +36,7 @@ filebeat.inputs:
   fields.app_id: "notary"
   fields_under_root: true
   paths:
-    - /opt/corda/network/nodes/notary/logs/*.log
+    - /opt/corda/nodes/notary/logs/*.log
 
 #alfa bank node logs
 - type: log
@@ -49,7 +49,7 @@ filebeat.inputs:
   fields.app_id: "alfa_bank"
   fields_under_root: true
   paths:
-    - /opt/corda/network/nodes/alfa/logs/*.log
+    - /opt/corda/nodes/alfa/logs/*.log
 
 #barclays bank node logs
 - type: log
@@ -62,10 +62,11 @@ filebeat.inputs:
   fields.app_id: "barclays_bank"
   fields_under_root: true
   paths:
-    - /opt/corda/network/nodes/barclays/logs/*.log
+    - /opt/corda/nodes/barclays/logs/*.log
 
 #This input captures the docker logs.
 - type: docker
+  enabled: true
   paths:
     - /hostfs/var/lib/docker/containers/*/*.log
   containers.ids: 
@@ -89,7 +90,7 @@ filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml
 
   # Set to true to enable config reloading
-  reload.enabled: false
+  reload.enabled: true
 
   # Period on which files under path should be checked for changes
   #reload.period: 10s
@@ -125,7 +126,7 @@ setup.template:
 # These settings control loading the sample dashboards to the Kibana index. Loading
 # the dashboards is disabled by default and can be enabled either by setting the
 # options here or by using the `setup` command.
-setup.dashboards.enabled: false
+setup.dashboards.enabled: true
 
 # The URL from where to download the dashboards archive. By default this URL
 # has a value which is computed based on the Beat name and version. For released
