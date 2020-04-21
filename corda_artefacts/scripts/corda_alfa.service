@@ -5,8 +5,8 @@ Requires=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/opt/corda/network/nodes/alfa
-ExecStart=sudo /usr/bin/java -jar /opt/corda/network/nodes/alfa/corda.jar
+WorkingDirectory=/opt/corda/nodes/alfa
+ExecStart=sudo /usr/bin/java -jar /opt/corda/nodes/alfa/corda.jar
 Restart=on-failure
 
 [Install]

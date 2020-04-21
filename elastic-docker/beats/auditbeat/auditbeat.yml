@@ -12,16 +12,10 @@ auditbeat.modules:
   # Check the file integrity of the following folders.
   - module: file_integrity
     paths:
-    - /bin
-    - /usr/bin
-    - /usr/local/bin
-    - /sbin
-    - /usr/sbin
-    - /usr/local/sbin
     #Special Check for Corda configuration, /node.conf
-    - /opt/corda/network/nodes/alfa_node/node.conf
-    - /opt/corda/network/nodes/barclays_node/node.conf
-    - /opt/corda/network/nodes/notary/node.conf
+    - /opt/corda/nodes/alfa/node.conf
+    - /opt/corda/nodes/barclays/node.conf
+    - /opt/corda/nodes/notary/node.conf
 
   # Collect Linux kernel events.
   - module: auditd

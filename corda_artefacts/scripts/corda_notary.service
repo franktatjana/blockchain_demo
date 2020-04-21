@@ -5,9 +5,10 @@ Requires=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/opt/corda/network/nodes/notary
-ExecStart=sudo /usr/bin/java -jar /opt/corda/network/nodes/notary/corda.jar
+WorkingDirectory=/opt/corda/nodes/notary
+ExecStart=sudo /usr/bin/java -jar /opt/corda/nodes/notary/corda.jar
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
+s

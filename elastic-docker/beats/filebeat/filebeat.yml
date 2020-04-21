@@ -98,8 +98,8 @@ filebeat.config.modules:
 #==================== Elasticsearch template setting ==========================
 
 setup.template: 
-  name: "filebeat-%{[fields.app_id]}"
-  pattern: "filebeat-%{[fields.app_id]}-*"
+  name: 'filebeat'
+  pattern: 'filebeat-%{[fields.app_id]}-*'
   settings:
     enabled: true
     index.number_of_shards: 1
