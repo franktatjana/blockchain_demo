@@ -12,10 +12,21 @@ auditbeat.modules:
   # Check the file integrity of the following folders.
   - module: file_integrity
     paths:
+      - /opt/corda/nodes/alfa/
+      - /opt/corda/nodes/barclays/
+      - /opt/corda/nodes/notary/
+    exclude_files:
+    - '(?i)\.sw[nop]$'
+    - '~$'
+    - '/\.git($|/)'
+    include_files: ['node.conf']
+    scan_at_start: true
+    scan_rate_per_sec: 50 MiB
+    max_file_size: 100 MiB
+    hash_types: [sha1]
+    recursive: false
     #Special Check for Corda configuration, /node.conf
-    - /opt/corda/nodes/alfa/node.conf
-    - /opt/corda/nodes/barclays/node.conf
-    - /opt/corda/nodes/notary/node.conf
+
 
   # Collect Linux kernel events.
   - module: auditd

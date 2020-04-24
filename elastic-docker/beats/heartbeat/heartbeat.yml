@@ -21,26 +21,94 @@ heartbeat.config.monitors:
 
 # Configure monitors inline
 heartbeat.monitors:
+  #NOTARY
 - type: tcp
   enabled: true
   schedule: '@every 5s'
   hosts: ["34.91.190.250"]
-  ports: [10002, 10003, 10004, 11001]
-  name: "notary"
+  ports: [10002]
+  name: "notary (p2p)" 
 
 - type: tcp
   enabled: true
   schedule: '@every 5s'
   hosts: ["34.91.190.250"]
-  ports: [10012, 10013, 10014, 1102]
-  name: "party_a_Bank Alfa-Bank, Moscow, RU"
+  ports: [ 10003]
+  name: "notary (client)"
 
 - type: tcp
   enabled: true
   schedule: '@every 5s'
   hosts: ["34.91.190.250"]
-  ports: [10022, 10023, 10024, 11003]
-  name: "party_b_Bank Barclays, London, GB"
+  ports: [10004]
+  name: "notary (admin)"
+
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["34.91.190.250"]
+  ports: [11001]
+  name: "notary (H2)"
+
+  #ALFA BANK
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["34.91.190.250"]
+  ports: [10012]
+  name: "Alfa-Bank, Moscow, RU (p2p)"
+
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["34.91.190.250"]
+  ports: [10013]
+  name: "Alfa-Bank, Moscow, RU (client)"
+
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["34.91.190.250"]
+  ports: [10014]
+  name: "Alfa-Bank, Moscow, RU (admin)"
+
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["34.91.190.250"]
+  ports: [1102]
+  name: "Alfa-Bank, Moscow, RU (H2)"
+
+
+#BARCLAYS
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["34.91.190.250"]
+  ports: [10022]
+  name: "Barclays, London, GB (p2p)"
+
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["34.91.190.250"]
+  ports: [10023]
+  name: "Barclays, London, GB (client)"
+
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["34.91.190.250"]
+  ports: [10024]
+  name: "Barclays, London, GB (admin)"
+
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["34.91.190.250"]
+  ports: [11003]
+  name: "Barclays, London, GB (H2)"
+
 
   # Total test connection and data exchange timeout
   #timeout: 16s
