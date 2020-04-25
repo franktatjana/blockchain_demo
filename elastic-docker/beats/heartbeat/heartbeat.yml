@@ -13,7 +13,6 @@
 # of individual yaml files.
 heartbeat.config.monitors:
   # Directory + glob pattern to search for configuration files
-  path: ${path.config}/monitors.d/*.yml
   # If enabled, heartbeat will periodically check the config.monitors path for changes
   reload.enabled: false
   # How often to check for changes
@@ -116,9 +115,12 @@ heartbeat.monitors:
 #==================== Elasticsearch template setting ==========================
 
 setup.template.settings:
+  enabled: true
+  name: "heartbeat"
+  pattern: "heartbeat-*"
   index.number_of_shards: 1
   index.codec: best_compression
-  #_source.enabled: false
+  _source.enabled: true
 
 #================================ General =====================================
 
