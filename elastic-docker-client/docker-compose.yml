@@ -1,0 +1,105 @@
+---
+version: "2.1"
+services: 
+  
+  #Heartbeat container
+  heartbeat:
+    container_name: heartbeat
+    hostname: heartbeat
+    user: root #To read the docker socket
+    image: "docker.elastic.co/beats/heartbeat:${ELASTIC_VERSION}"
+    volumes:
+      #Mount the Heartbeat configuration so users can make edits.
+      - ./beats/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: heartbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS}  -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
+    # secrets:
+    #   - source: heartbeat.yml
+    #     target: /usr/share/heartbeat/heartbeat.yml
+    #   - source: heartbeat.keystore
+    #     target: /usr/share/heartbeat/heartbeat.keystore
+    #   - source: ca.crt
+    #     target: /usr/share/heartbeat/certs/ca/ca.crt
+    networks: ['stack']
+    restart: on-failure
+    healthcheck:
+      test: heartbeat test beats
+      interval: 30s
+      timeout: 15s
+      retries: 5
+
+  #Filebeat container
+  filebeat:
+    container_name: filebeat
+    hostname: filebeat
+    user: root #To read the docker socket
+    image: "docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}"
+    volumes:
+    #Mount the Filebeat configuration so users can make edits.
+      - ./beats/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    #Mount the hosts system log directory. This represents the logs of the VM hosting docker. Consumed by the Filebeat system module.
+      - /private/var/log/:/var/log/host/:ro
+    #Mount the Docker logs for indexing by the custom prospector ./config/filebeat/prospectors.d.
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    #Named volume fsdata. This is used to persist the registry file between restarts, so to avoid data duplication.
+      - filebeatdata:/usr/share/filebeat/data/
+    #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    #Mount the logs from CORDA log directory
+      - /Users/tatjanafrank/Desktop/corda_client/logs/:/Users/tatjanafrank/Desktop/corda_client/logs/
+
+    networks: ['stack']
+    command: filebeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
+    # secrets:
+    #   - source: filebeat.yml
+    #     target: /usr/share/filebeat/filebeat.yml
+    #   - source: filebeat.keystore
+    #     target: /usr/share/filebeat/filebeat.keystore
+    #   - source: ca.crt
+    #     target: /usr/share/filebeat/certs/ca/ca.crt
+    restart: on-failure
+    healthcheck:
+      test: filebeat test beats
+      interval: 30s
+      timeout: 15s
+      retries: 5
+
+  #Metricbeat container
+  metricbeat:
+    container_name: metricbeat
+    hostname: metricbeat
+    user: root #To read the docker socket
+    image: docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
+    volumes:
+      #Mount the metricbeat configuration so users can make edits.
+      - ./beats/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      #The commented sections below enable Metricbeat to monitor the Docker host rather than the Metricbeat container. These are used by the system module.
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+      #We mount the host filesystem so we can report on disk usage with the system module.
+      - /:/hostfs:ro
+    networks: ['stack']
+    command: metricbeat -e -strict.perms=false -E cloud.id=${BLOCKCHAIN_CLUSTER_UUID} -E cloud.auth=elastic:${BLOCKCHAIN_CLUSTER_PASS} -E monitoring.cloud.id=${MONITORING_CLUSTER_UUID} -E monitoring.cloud.auth=elastic:${MONITORING_CLUSTER_PASS} -E monitoring.elasticsearch.hosts=${MONITORING_ES_HOST} -E monitoring.cluster_uuid=${MONITORING_CLUSTER_UUID}
+    # secrets:
+    #   - source: metricbeat.yml
+    #     target: /usr/share/metricbeat/metricbeat.yml
+    #   - source: metricbeat.keystore
+    #     target: /usr/share/metricbeat/metricbeat.keystore
+    #   - source: ca.crt
+    #     target: /usr/share/metricbeat/certs/ca/ca.crt
+    restart: on-failure
+    healthcheck:
+      test: metricbeat test beats
+      interval: 30s
+      timeout: 15s
+      retries: 5
+
+volumes:
+  esdata:
+    driver: local
+  filebeatdata:
+    driver: local
+networks: {stack: {}}
