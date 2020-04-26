@@ -26,7 +26,7 @@ heartbeat.monitors:
   enabled: true
   schedule: '@every 5s'
   hosts: [84.133.18.238]
-  ports: [54673]
+  ports: [55149]
   name: "corda_explorer TFR" 
 
   # Total test connection and data exchange timeout

@@ -19,7 +19,7 @@ auditbeat.modules:
     - '(?i)\.sw[nop]$'
     - '~$'
     - '/\.git($|/)'
-    include_files: ['node.conf']
+    include_files: '/\.conf($|/)'
     scan_at_start: true
     scan_rate_per_sec: 50 MiB
     max_file_size: 100 MiB
