@@ -7,9 +7,9 @@ services:
     container_name: alfa
     hostname: alfa
     user: root
-    networks:
-      app_net:
-        ipv4_address: 34.91.190.250:10023
+    # networks:
+    #   app_net:
+    #     ipv4_address: 34.91.190.250
  
     ports:
       - "10012:10012"
@@ -25,9 +25,9 @@ services:
     container_name: barclays
     hostname: barclays
     user: root
-    networks:
-      app_net:
-        ipv4_address: 34.91.190.250:10023
+    # networks:
+    #   app_net:
+    #     ipv4_address: 34.91.190.250
 
     ports:
       - "10022:10022"
@@ -43,9 +43,9 @@ services:
     container_name: notary
     hostname: notary
     user: root
-    networks:
-      app_net:
-        ipv4_address: 34.91.190.250:10003
+    # networks:
+    #   app_net:
+    #     ipv4_address: 34.91.190.250
 
     ports:
       - "10002:10002"
@@ -54,11 +54,11 @@ services:
     volumes:
       - /opt/corda/nodes/notary/:/opt/corda/nodes/notary/
 
-networks:
-  app_net:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 34.91.190.250/24
-          gateway: 34.91.190.250
+# networks:
+#   app_net:
+#     driver: bridge
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 34.91.190.250/24
+#           gateway: 34.91.190.250
