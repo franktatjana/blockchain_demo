@@ -1,5 +1,4 @@
 FROM openjdk:8-jdk-alpine
-COPY /opt/corda/nodes/notary/ /opt/corda/nodes/notary/
 
 ENTRYPOINT ["java","-jar","/opt/corda/nodes/notary/corda.jar", \
 "-javaagent:./opt/corda/nodes/notary/elastic-apm-agent-1.14.0.jar", \

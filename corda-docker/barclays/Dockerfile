@@ -1,5 +1,4 @@
 FROM openjdk:8-jdk-alpine
-COPY /opt/corda/nodes/barclays/ /opt/corda/nodes/barclays/
 
 ENTRYPOINT ["java","-jar","/opt/corda/nodes/barclays/corda.jar", \
 "-javaagent:./opt/corda/nodes/barclays/elastic-apm-agent-1.14.0.jar", \
