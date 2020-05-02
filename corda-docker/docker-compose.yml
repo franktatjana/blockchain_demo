@@ -7,6 +7,9 @@ services:
     container_name: alfa
     hostname: alfa
     user: root
+    networks:
+            net:
+                ipv4_address: 34.91.190.250
     ports:
       - "10012:10012"
       - "10013:10013"
@@ -21,6 +24,9 @@ services:
     container_name: barclays
     hostname: barclays
     user: root
+    networks:
+            net:
+                ipv4_address: 34.91.190.250
     ports:
       - "10022:10022"
       - "10023:10023"
@@ -35,6 +41,9 @@ services:
     container_name: notary
     hostname: notary
     user: root
+    networks:
+            net:
+                ipv4_address: 34.91.190.250
     ports:
       - "10002:10002"
       - "10003:10003"
