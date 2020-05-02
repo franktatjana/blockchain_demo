@@ -3,7 +3,7 @@ services:
   alfa:
     build:
       context: .
-      dockerfile: alfa/
+      dockerfile: alfa/dockerfile
     container_name: alfa
     hostname: alfa
     user: root
@@ -17,7 +17,7 @@ services:
   barclays:
     build:
       context: .
-      dockerfile: barclays/
+      dockerfile: barclays/dockerfile
     container_name: barclays
     hostname: barclays
     user: root
@@ -31,7 +31,7 @@ services:
   notary:
     build:
       context: .
-      dockerfile: notary/
+      dockerfile: notary/dockerfile
     container_name: notary
     hostname: notary
     user: root
