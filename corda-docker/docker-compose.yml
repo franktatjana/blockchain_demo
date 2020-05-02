@@ -1,7 +1,9 @@
 version: "2.1"
 services: 
   alfa:
-    build: .
+    build:
+      context: .
+      dockerfile: alfa/
     container_name: alfa
     hostname: alfa
     user: root
@@ -10,10 +12,12 @@ services:
       - "10013:10013"
       - "10014:10014"
     volumes:
-      /opt/corda/nodes/alfa/:/opt/corda/nodes/alfa/
+      /home/tatjana_frank/blockchain_demo/corda-docker/alfa:/opt/corda/nodes/alfa/
 
   barclays:
-    build: .
+    build:
+      context: .
+      dockerfile: barclays/
     container_name: barclays
     hostname: barclays
     user: root
@@ -25,7 +29,9 @@ services:
       /opt/corda/nodes/barclays/:/opt/corda/nodes/barclays/
 
   notary:
-    build: .
+    build:
+      context: .
+      dockerfile: notary/
     container_name: notary
     hostname: notary
     user: root
