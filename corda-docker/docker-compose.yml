@@ -12,7 +12,7 @@ services:
       - "10013:10013"
       - "10014:10014"
     volumes:
-      /home/tatjana_frank/blockchain_demo/corda-docker/alfa:/opt/corda/nodes/alfa/
+      - /home/tatjana_frank/blockchain_demo/corda-docker/alfa:/opt/corda/nodes/alfa/
 
   barclays:
     build:
@@ -26,7 +26,7 @@ services:
       - "10023:10023"
       - "10024:10024"
     volumes:
-      /opt/corda/nodes/barclays/:/opt/corda/nodes/barclays/
+      - /opt/corda/nodes/barclays/:/opt/corda/nodes/barclays/
 
   notary:
     build:
@@ -40,5 +40,5 @@ services:
       - "10003:10003"
       - "10004:10004"
     volumes:
-      /opt/corda/nodes/notary/:/opt/corda/nodes/notary/
+      - /opt/corda/nodes/notary/:/opt/corda/nodes/notary/
 
