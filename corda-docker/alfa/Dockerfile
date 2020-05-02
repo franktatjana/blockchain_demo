@@ -9,5 +9,4 @@ ENTRYPOINT ["java","-jar","/opt/corda/nodes/alfa/corda.jar", \
 "-Delastic.apm.verify_server_cert=false", \
 "-Delastic.apm.service_name=corda-node-alfa", \
 "-javaagent:./jolokia-jvm-1.6.2-agent.jar=port=7777,host=34.91.190.250", \
-"--logging-level=TRACE"
-]
+"--logging-level=TRACE"]
