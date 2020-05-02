@@ -1,0 +1,29 @@
+version: "2.1"
+services: 
+  alfa:
+    container_name: alfa
+    hostname: alfa
+    user: root
+    ports:
+      - "10012:10012"
+      - "10013:10013"
+      - "10014:10014"
+
+  barclays:
+    container_name: barclays
+    hostname: barclays
+    user: root
+    ports:
+      - "10022:10022"
+      - "10023:10023"
+      - "10024:10024"
+
+  notary:
+    container_name: notary
+    hostname: notary
+    user: root
+    ports:
+      - "10002:10002"
+      - "10003:10003"
+      - "10004:10004"
+
