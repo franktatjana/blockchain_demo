@@ -10,8 +10,7 @@ services:
     networks:
       testing_net:
         ipv4_address: 34.91.190.250
-      outside:
-        external: true
+ 
     ports:
       - "10012:10012"
       - "10013:10013"
@@ -29,8 +28,7 @@ services:
     networks:
       testing_net:
         ipv4_address: 34.91.190.250
-      outside:
-        external: true
+
     ports:
       - "10022:10022"
       - "10023:10023"
@@ -48,8 +46,7 @@ services:
     networks:
       testing_net:
         ipv4_address: 34.91.190.250
-      outside:
-        external: true
+
     ports:
       - "10002:10002"
       - "10003:10003"
