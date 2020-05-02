@@ -9,7 +9,7 @@ services:
     user: root
     networks:
       app_net:
-        ipv4_address: 34.91.190.250
+        ipv4_address: 34.91.190.250:10023
  
     ports:
       - "10012:10012"
@@ -27,7 +27,7 @@ services:
     user: root
     networks:
       app_net:
-        ipv4_address: 34.91.190.250
+        ipv4_address: 34.91.190.250:10023
 
     ports:
       - "10022:10022"
@@ -45,7 +45,7 @@ services:
     user: root
     networks:
       app_net:
-        ipv4_address: 34.91.190.250
+        ipv4_address: 34.91.190.250:10003
 
     ports:
       - "10002:10002"
